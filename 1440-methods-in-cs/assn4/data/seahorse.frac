@@ -1,0 +1,9 @@
+# seahorse.frac
+#
+# I can see it.  Can you?
+type: mandelbrot
+pixels: 640
+centerx: -0.745
+centery:  0.105
+axislength: 0.01
+iterations: 384

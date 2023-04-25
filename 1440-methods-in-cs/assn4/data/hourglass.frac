@@ -1,0 +1,12 @@
+# hourglass.frac
+# It looks like an hourglass
+type: julia
+creal: -1
+cimag: 0
+
+# Naming stuff is hard, okay?
+pixels: 1024
+centerx: 0.618
+centery: 0.0
+axislength: 0.017148277367054
+iterations: 78
