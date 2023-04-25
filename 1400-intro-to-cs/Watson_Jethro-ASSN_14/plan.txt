@@ -1,0 +1,88 @@
+Requirement Specifications
+	Create a program that uses Turtle to draw shapes. Show the following menu:
+	Enter Circle
+	Enter Rectangle
+	Remove Shape
+	Draw Shapes
+	Exit
+
+	Circles			User inputs position, radius, and color. The position is the CENTER of the circle
+	Rectangles		User inputs position, height, width, color. The position is the lower left-hand corner
+	Colors			Allow red, yellow, blue, and green only
+	Remove			Show the number of items in the list and let the user enter a number and remove that
+					shape from the list. You may assume that they only enter a number within the range that
+					you display.
+	Draw Shapes		Draw the shapes in the order they are in the list. Clear the screen if shapes had been
+					drawn before. The color is the fill color of the shape. Shapes are only drawn after this
+					selection, not after entering or removing a shape.
+	Guidelines
+		Create a class called Circle in its own file called circle.py
+		Create a class called Rectangle in its own file called rectangle.py
+		In each class create a method called draw() that will draw the shape
+		Store all Circle and Rectangle objects in a single list
+		Use a loop to draw all of the shapes
+		Create a file called assn14-task3.py that contains a main() function to run your program
+System Analysis
+    the class circle is imported from circle.py to assn14-task3.py
+	the class rectangle is imported from rectangle.py to assn14-task3.py
+	the module turtle is imported into circle.py
+	the module turtle is imported into rectangle.py
+    data comes in from the user and is used to create the class, navigate the menu, or submenu.
+    No formulas.
+System Design
+    UML's
+    ************************************
+    Circle
+    ************************************
+    radius: float
+    X: float
+    Y: float
+    color: string
+    tr: turtle
+    ************************************
+    circle(radius: float, posX: float, posY: float, color: string)
+    draw(): None
+    clear(): None
+    ************************************
+    ************************************
+    Rectangle
+    ************************************
+    height: float
+	width: float
+    X: float
+    Y: float
+    color: string
+    tr: turtle
+    ************************************
+    rectangle(height: float, width: float, posX: float, posY: float, color: string)
+    draw(): None
+    clear(): None
+    ************************************
+Implementation
+    N/A
+Testing
+    create circle (input 1)
+		pos 0,0
+		radius 50
+		color black
+		color black
+		color blue
+    create rectangle (input 2)
+		pos -50,-50
+		height 50
+		width 50
+		color black
+		color yellow
+	create circle (input 1)
+		pos 50,50
+		radius 50
+		color red
+    draw shapes (input 4)
+    remove shape (input 3)
+		input 3
+	draw shapes (input 4)
+    exit (input 5)
+Deployment
+    N/A
+Maintenance
+    N/A

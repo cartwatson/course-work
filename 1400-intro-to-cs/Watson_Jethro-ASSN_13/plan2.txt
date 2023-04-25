@@ -1,0 +1,76 @@
+Requirement Specifications
+    (Check password) Some Web sites impose certain rules for passwords. Write a function
+    that checks whether a string is a valid password. Suppose the password rules are as follows:
+        A password must have at least eight characters.
+        A password must consist of only letters and digits.
+        A password must contain at least two digits.
+        A password cannot contain the word ‘password’
+        A password cannot end with ‘123’
+    Your program should define a class called Password, which is in its own file called password.py. You should have
+    another file called assn13-task2.py that has code the creates and uses a Password object. All input and print
+    functions should be in in this file. Your program will prompt the user for a password, and after completing will ask
+    the user if they want to enter another. The program should only ever create one instance of Password. Your Password
+    class should have at least the following:
+        setPassword() method
+        isValid() method
+        This should return a Boolean
+        getErrorMessage() method
+            This should return a string that indicates all problems with the password
+        It should be called if isValid() returns False
+        The isValid() method can generate this string as it tests each password requirement
+        Example return string
+        “must have 8 characters\nmust have at least 2 digits\ncannot end in 123\ncannont contain "password"\ncan only
+        consist of letters and digits”
+System Analysis
+    the class password() is imported from password.py to assn13-task2.py data comes in from the user and is used to
+    create the class, navigate the menu, or mutate sections of the object previously defined. No formula complicated
+    enough to note.
+System Design
+    UML
+    ************************************
+    Password
+    ************************************
+    pass: string
+    valid: bool
+    passList: list
+    digits: int
+    char8: string
+    digits2: string
+    end123: string
+    conPass: string
+    symbols: string
+    errMessage: string
+    symbolsInvalid: bool
+    passwordInvalid: bool
+    ************************************
+    Chessboard()
+    setPassword(message: str): None
+    getErrorMessage(): None
+    __sym(i: int): None
+    __digitsCheck(i: int, strlen: int): None
+    __containsPassword(i: int): None
+    __end123Check(strlen: int): None
+    __lenCheck(strlen: int): None
+    isValid(): Bool
+    ************************************
+Implementation
+    N/A
+Testing
+    input "password123"
+    verify error message is correct
+    input "y" to continue testing
+    input "hello"
+    verify error message is correct
+    input "y" to continue testing
+    input "hello hello%%%%%"
+    verify error message is correct
+    input "y" to continue testing
+    input "abc 123"
+    verify error message is correct
+    input "asdfhjkl" to check for validation of input
+    input "N" to terminate program
+    program terminates
+Deployment
+    N/A
+Maintenance
+    N/A

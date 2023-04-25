@@ -1,0 +1,78 @@
+Requirement Specifications
+    Design a class named Account that contains:
+        A private int data field named id for the account.
+        A private float data field named balance for the account.
+        A private float data field named annualInterestRate that stores the current interest rate.
+        A constructor that creates an account with the specified id (default 0), initial balance (default 100), and annual interest rate (default 0).
+        The accessor and mutator methods for id, balance, and annualInterestRate.
+        A method named getMonthlyInterestRate() that returns the monthly interest rate.
+        A method named getMonthlyInterest() that returns the monthly interest.
+        A method named withdraw that withdraws a specified amount from the account.
+        A method named deposit that deposits a specified amount to the account.
+    Ask the user for starting inputs for an object of the account class
+    Create an account object with these starting variables
+    Display access/mutate menu to users
+    Display proper output based on user choice
+    Loop back to menu display after all actions are taken on the users choice
+    Exit program is user chooses to exit
+
+    Input Requirements
+        You may assume all input received are proper numbers
+        You should not allow any negative numbers
+        Interest rate should not be greater than 10%
+        Loop and request input again if an invalid number is entered
+System Analysis
+    the class Account() is imported from account.py to assn12-task2.py
+    data comes in from the user and is used to create the class, navigate the menu,
+    or mutate sections of the object previously defined.
+    No formula complicated enough to note.
+System Design
+    UML
+    ************************************
+    Account
+    ************************************
+    id: int
+    balance: float
+    monthlyInterest: float
+    annualInterestRate: float
+    monthlyInterestRate: float
+    ************************************
+    Account(id: int, balance: float, annualInterestRate: float)
+    set_id(__id: int): None
+    set_balance(__balance: float): None
+    set_annualInterestRate(__annualInterestRate: float): None
+    get_id(): int
+    get_balance(): float
+    get_annualInterestRate(): float
+    get_monthlyInterestRate(): float
+    get_monthlyInterest(): float
+    withdraw(amount: float): None
+    deposit(amount: float): None
+    ************************************
+Implementation
+    N/A
+Testing
+    attempt to input negative account ID
+    input legal account ID
+    attempt to input negative balance
+    input legal balance
+    attempt to input negative interest rate
+    attempt to input interest rate >10
+    input legal interest rate
+    verify ID (input 1)
+    verify balance (input 2)
+    verify annual interest rate (input 3)
+    verify monthly interest rate (input 4)
+    verify monthly interest (input 5)
+    verify withdraw (input 6)
+        attempt to withdraw more than is in account
+        attempt to withdraw negative amount
+        withdraw legal amount
+    verify deposit (input 7)
+        attempt to deposit negative amount
+        deposit legal amount
+    exit menu (input 8)
+Deployment
+    N/A
+Maintenance
+    N/A

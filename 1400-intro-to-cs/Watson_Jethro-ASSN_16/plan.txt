@@ -1,0 +1,127 @@
+Requirement Specifications
+    Create a program that uses the deck and card classes provided. Name your file assn16-task1.py. You will implement
+    the Blackjack game. The goal is to have a higher score than the dealer without going over 21 points. This version
+    does not have all features of regular blackjack. Please read the requirements.
+    It must have only the following features:
+
+    Prompt the user for the number of players. This does not include the dealer. You may have 1 - 5 players
+    Each player starts with $100 in their account
+    A player can continue until they are out of money
+    Each round
+        Prompt each player one at a time for their bet amount.
+            Display the current balance for each user as part of their prompt
+            The minimum bet is $5 or their entire balance, whichever is lower
+        Deal the cards
+            Each round will have a fresh deck of shuffled cards
+            Cards are dealt one at a time beginning with player 1 and ending with the dealer
+            Each player (including the dealer) gets two cards, meaning there will be two cycles of dealing cards to
+            each player.
+            After dealing all cards display the dealer's second card
+        For each player starting with player 1
+            Show the player hand
+            Ask the player if they'd hit (take another card) or hold
+            Repeat until they hold or bust (total of cards is over 21)
+            If they bust they lose
+            If the player holds then the next player goes
+        After all players are done the dealer completes its turn
+            Display both dealer cards (print each on a new line)
+            Use time.sleep() to wait for 1 second before dealing another card(s) to the dealer
+            The dealer must take a card until its total is 17 or higher
+            If the dealer's initial hand is 17 or higher it does not take a card
+            Use appropriate messages so the players know what the dealer is doing
+                Ex: "The dealer takes a card" / "The dealer busts" / "The dealer holds"
+        Determining winners
+            If the dealer busts (goes over 21), all players who did not bust win
+            If the player and dealer totals are the same they tie
+            If the players hand is lower than the dealer, the player loses
+            If the players hand is higher than the dealer, the player wins
+            Use appropriate messages to let each player know what their result is
+        Player payouts
+            Win - add the amount bet to the player's balance
+            Tie - neither add nor subtract from he player's balance
+            Lose - subtract the amount bet from the player's balance
+            Display each user's balance (including those who have lost all their money)
+    Ask to Play again
+        Yes
+            Repeat the round for all players with a positive balance
+        No
+            Print a Thank You message
+            Print each player's name (their player number) and balance starting with the one with the highest.
+            You should perform a sort first.
+
+    Notes:
+        This is not quite real blackjack.
+            The player and dealer will not automatically win if they have Blackjack (21 on the first hand)
+            There is no doubling down or insurance
+        Card values
+            Numeric cards are worth the same number of points
+            Ace is worth eleven points unless the total of all cards exceeds 21, then it is counted as one.
+            Jack, Queen, and King are worth 10 points
+        Use the full card name, not the nickname for this task
+        Use a single multidimensional list to manage the hands for all players and the dealer
+        Use other appropriate list(s) to manage the account balance for each player and wagers
+        Use appropriate prompts so it is clear which player should be playing and what their options are
+        Use appropriate messages so players know what is happening in the game
+        You should not modify the card or deck files
+System Analysis
+	the module random is imported into deck.py
+	the module time is imported into assn16-task1.py
+    the class Deck is imported from deck.py to assn16-task1.py
+	the class Card is imported from card.py to assn16-task1.py
+    data comes in from the user and is used to navigate the menu and perform various actions in game.
+    No formulas.
+System Design
+    UML's
+    ************************************
+    Card
+    ************************************
+    __value: int
+    __suits: list of strings
+    __ranks: list of strings
+    ************************************
+    getRank(): string
+    getSuit(): string
+    getCardValue(): int
+    getDeckValue(): int
+    getNickName(): string
+    __str__: string
+    __repr__: string
+    ************************************
+    ************************************
+    Deck
+    ************************************
+    __deck: list of cards
+    ************************************
+    shuffle(): None
+    draw(): card
+    ************************************
+Implementation
+    N/A
+Testing
+    sort by Value (input 1)
+		Verify cards are sorted by value
+    sort by ID (input 2)
+        Verify cards are sorted by ID
+	search for a card (input 3)
+		search for a card you can see in your hand
+		verify that that card is found and is accurate
+	search for a card (input 3)
+	    search for a card you can see is not in your hand
+	    verify that that card is not found
+    new hand (input 4)
+    sort by Value (input 1)
+		Verify cards are sorted by value
+    sort by ID (input 2)
+        Verify cards are sorted by ID
+	search for a card (input 3)
+		search for a card you can see in your hand
+		verify that that card is found and is accurate
+	search for a card (input 3)
+	    search for a card you can see is not in your hand
+	    verify that that card is not found
+    exit (input 5)
+        Verify that exit message is displayed
+Deployment
+    N/A
+Maintenance
+    N/A

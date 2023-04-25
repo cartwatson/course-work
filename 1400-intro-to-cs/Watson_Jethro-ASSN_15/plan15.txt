@@ -1,0 +1,119 @@
+Requirement Specifications
+    Create a class called Card
+        Stores necessary data
+        Initializer that takes a single number as a parameter
+        All necessary getter type methods
+            id
+            paw
+            value
+            coin
+    Create a class called Deck
+        Used to create a single deck of cards
+        Initializer that does not take any parameters
+        Methods
+            shuffle - resets to a full deck and shuffles
+            draw – deals out the top card
+    Use the module called gronkyutil.py
+        This stores the map for paw and coin
+        It contains a function you can use to check to see if your id to value/hand/coin conversion is working properly. It may also come in handy somewhere else (hint hint).
+    Create a file called assn15-task3.py
+        It should contain a main function
+        The main function should
+            Create an instance of Deck
+            Deal a single hand of 30 cards
+            Show the user a menu
+            Sort by value
+                Call a function to sort by card value
+                Display the newly sorted hand
+                    Print each card on a new line
+                        Example given:
+                            12 of Scissor Tail
+                            3 of Rock Head
+            Sort by id
+                Call a function to sort by id
+                Display the newly sorted hand
+                    Same display as above
+            Find card
+                Prompt the user to select:
+                Value
+                Hand
+                    Use map!
+                Coin
+                    Use map!
+                Check to see if the card with the user selection is in the hand
+            New hand
+                This should start with a newly shuffled deck
+            Quit
+        Sort functions
+            Takes a list of cards as the parameter
+            Does a bubble sort for id
+            Do an insertion sort for value
+        Search functions
+            Takes a list of cards and a key as the parameters
+            Perform a binary search to determine if the user selection is contained in the hand. (Hint: remember the requirements to do a binary search)
+            Returns true if it is found in the hand
+            Returns false if the card is not found in the hand
+System Analysis
+    the class deck is imported from gronkyutil.py to assn15-task3.py
+	gronkutil.pu is imported to assn15-task3.py
+	the module random is imported into gronkyutil.py
+    data comes in from the user and is used to navigate the menu and search for a card.
+    No formulas.
+System Design
+    UML's
+    ************************************
+    Card
+    ************************************
+    __list: list
+    __value: int
+    __paw: string
+    __coin: string
+    __id: int
+    ************************************
+    card(id: int)
+    getValue(): int
+    getID(): int
+    getCoin(): string
+    getPaw(): string
+    ************************************
+    ************************************
+    Deck
+    ************************************
+    __internal_deck: list
+    __id: int
+    ************************************
+    deck()
+    shuffle(): None
+    draw(): card
+    generate_deck(): list
+    ************************************
+Implementation
+    N/A
+Testing
+    sort by Value (input 1)
+		Verify cards are sorted by value
+    sort by ID (input 2)
+        Verify cards are sorted by ID
+	search for a card (input 3)
+		search for a card you can see in your hand
+		verify that that card is found and is accurate
+	search for a card (input 3)
+	    search for a card you can see is not in your hand
+	    verify that that card is not found
+    new hand (input 4)
+    sort by Value (input 1)
+		Verify cards are sorted by value
+    sort by ID (input 2)
+        Verify cards are sorted by ID
+	search for a card (input 3)
+		search for a card you can see in your hand
+		verify that that card is found and is accurate
+	search for a card (input 3)
+	    search for a card you can see is not in your hand
+	    verify that that card is not found
+    exit (input 5)
+        Verify that exit message is displayed
+Deployment
+    N/A
+Maintenance
+    N/A

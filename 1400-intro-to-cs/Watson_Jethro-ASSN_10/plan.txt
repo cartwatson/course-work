@@ -1,0 +1,33 @@
+Requirement Specs
+    draw a chessboard from user defined overall width and height using user defined starting point.
+    if width or height are not given default value is 250.
+System Analysis
+    there no formulas used.  Data comes in from the user for startX, startY, with width and height
+    being optional inputs.
+System Design
+    Necessary inputs come from user and are used to call the chessboard function.
+    The main() function calls drawChessboard from the chessboard file.
+    The chessboard file uses the inputs to draw the outside of the chessboard.
+    The drawChessboard function then calls the drawMini function.
+    The drawMini function uses inputs to draw the squares of the chessboard.
+Implementation
+    N/A
+Testing
+    Test Case 1
+        coords 0, 0
+        height 50
+        width 50
+        visually check results
+    Test Case 2
+        coords -200, 200
+        no height input
+        width 400
+        visually check results
+    Test Case 3
+        coords -100, 300
+        no height or width input
+        visually check results
+Deployment
+    N/A
+Maintenance
+    N/A
