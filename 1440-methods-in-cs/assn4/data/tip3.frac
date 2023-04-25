@@ -1,0 +1,7 @@
+# tip3.frac
+type: Mandelbrot
+pixels: 640
+centerX: -1.789435
+centerY: 0.0
+axisLength: 0.009375
+Iterations: 100

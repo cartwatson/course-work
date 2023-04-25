@@ -1,0 +1,13 @@
+# invalid.frac
+#
+# This is a purposefully broken fractal config file
+# Use this to stress-test your configuation file parser
+
+
+# Here be dragons!
+Type: julia
+centerX: in the middle
+centerY:
+Itertons: 23.654
+PIXELS: 894.965
+cImag: 0.3
