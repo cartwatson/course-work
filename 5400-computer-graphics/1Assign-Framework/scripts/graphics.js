@@ -66,6 +66,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         let currP = { x: x1, y: y1 }
         let dirX = 1;
         let dirY = 1;
+        let dir = "horiz";
 
         // determine octant
         //   \ 7 | 0 /
@@ -78,58 +79,51 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
             // left half // octants: 4, 5, 6, 7
             if (y2 - y1 < 0) {
                 // top half // octants: 6, 7
-                if (y2 > x2) {
-                    console.log("OCTANT 7"); // DEBUG
+                if (dY > dX) {
                     // octant 7
-
+                    dir = "vert";
+                    dirX = -1;
                 } else {
-                    console.log("OCTANT 6"); // DEBUG
                     // octant 6
                     dirX = -1;
                 }
             } else {
                 // bottom half // octants: 4, 5
-                if (y2 > x2) {
-                    console.log("OCTANT 5"); // DEBUG
+                if (dY > dX) {
+                    // octant 4
+                    dir = "vert";
+                    dirY = -1;
+                    dirX = -1;
+                } else {
                     // octant 5
                     dirX = -1;
                     dirY = -1;
-                } else {
-                    console.log("OCTANT 4"); // DEBUG
-                    // octant 4
-
                 }
             }
         } else {
-            console.log("right half") // DEBUG
             // right half // octants: 0, 1, 2, 3
             if (y2 - y1 < 0) {
-                console.log("top right corner") // DEBUG
                 // top right corner // octants: 0, 1
-                if (y2 > x2) {
-                    console.log("OCTANT 0"); // DEBUG
+                if (dY > dX) {
                     // octant 0
-                    
+                    // default dirX and dirY
+                    dir = "vert";
                 } else {
-                    console.log("OCTANT 1"); // DEBUG
                     // octant 1
                     // default dirX and dirY
                 }
             } else {
-                console.log("bottom right corner") // DEBUG
                 // bottom right corner // octants: 2, 3
                 if (y2 > x2) {
-                    console.log("OCTANT 3"); // DEBUG
                     // octant 3
-
+                    dir = "vert";
+                    dirY = -1;
                 } else {
-                    console.log("OCTANT 2"); // DEBUG
                     // octant 2
                     dirY = -1;
                 }
             }
         }
-
 
         // draw line
         let notFinished = true;
@@ -139,16 +133,26 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
             drawPixel(currP.x, currP.y, color)
 
             // get point
-            currP.x += dirX; // TODO: change to dirX
-            if (Pk >= 0) {
-                currP.y -= dirY; // TODO: change to dirY
-                Pk = Pk + 2 * dY - 2 * dX;
+            if (dir == "vert") {
+                currP.y -= dirY;
+                if (Pk >= 0) {
+                    currP.x += dirX;
+                    Pk = Pk + 2 * dX - 2 * dY;
+                } else {
+                    Pk = Pk + 2 * dX;
+                }
             } else {
-                Pk = Pk + 2 * dY;
+                currP.x += dirX;
+                if (Pk >= 0) {
+                    currP.y -= dirY;
+                    Pk = Pk + 2 * dY - 2 * dX;
+                } else {
+                    Pk = Pk + 2 * dY;
+                }
             }
 
             // end if we just drew the last pixel
-            if (currP.x == x2 && currP.y == y2) { notFinished = false; }
+            if (currP.x == x2 || currP.y == y2) { notFinished = false; }
         }
     }
 
@@ -161,4 +165,4 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     };
 
     return api;
-}(150, 150, true));
+}(1000, 1000, false));
