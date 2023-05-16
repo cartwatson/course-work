@@ -15,6 +15,11 @@ MySample.main = (function(graphics) {
             x: (ptEnd.x - ptCenter.x) * Math.cos(rotationRate *  elapsedTime) - (ptEnd.y - ptCenter.y) * Math.sin(rotationRate * elapsedTime) + ptCenter.x,
             y: (ptEnd.y - ptCenter.y) * Math.cos(rotationRate *  elapsedTime) + (ptEnd.x - ptCenter.x) * Math.sin(rotationRate * elapsedTime) + ptCenter.y
         }
+
+        ptEnd2 = {
+            x: (ptEnd.y - ptCenter.y) * Math.cos(rotationRate *  elapsedTime) + (ptEnd.x - ptCenter.x) * Math.sin(rotationRate * elapsedTime) + ptCenter.y,
+            y: (ptEnd.x - ptCenter.x) * Math.cos(rotationRate *  elapsedTime) - (ptEnd.y - ptCenter.y) * Math.sin(rotationRate * elapsedTime) + ptCenter.x
+        }
     }
 
     //------------------------------------------------------------------
@@ -26,6 +31,7 @@ MySample.main = (function(graphics) {
         graphics.clear();
 
         graphics.drawLine(ptCenter.x, ptCenter.y, Math.trunc(ptEnd.x), Math.trunc(ptEnd.y), "aqua");
+        graphics.drawLine(ptCenter.x, ptCenter.y, Math.trunc(ptEnd2.x), Math.trunc(ptEnd2.y), "pink");
     }
 
     //------------------------------------------------------------------
@@ -49,10 +55,9 @@ MySample.main = (function(graphics) {
         y: graphics.sizeY / 2
     }
 
-    let ptEnd = {
-        x: 0,
-        y: 0
-    }
+    let ptEnd  = { x: 0, y: 0 }
+    let ptEnd2 = { x: 0, y: 0 }
+    let startTime = performance.now();
 
     // DEBUG {
     // graphics.drawLine(ptCenter.x, ptCenter.y, 100, 30, "white") // octant 0
@@ -65,7 +70,6 @@ MySample.main = (function(graphics) {
     // graphics.drawLine(ptCenter.x, ptCenter.y, 60, 30, "orange") // octant 7
     // } DEBUG
 
-    let startTime = performance.now();
 
     requestAnimationFrame(animationLoop); 
 
