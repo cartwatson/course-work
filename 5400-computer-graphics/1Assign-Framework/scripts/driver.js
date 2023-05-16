@@ -49,16 +49,13 @@ MySample.main = (function(graphics) {
     }
 
     // DEBUG
-    // graphics.drawPixel(ptCenter.x, ptCenter.y, "pink")
-    // graphics.drawLine(ptCenter.x, ptCenter.y, 100, 75, "pink")
-    // graphics.drawLine(ptCenter.x, ptCenter.y, 100, 74, "pink")
-    graphics.drawLine(ptCenter.x, ptCenter.y, 100, 75, "blue")
-    graphics.drawLine(ptCenter.x, ptCenter.y, 100, 100, "green")
-    // graphics.drawLine(50, 50, 100, 50, "blue")
-    // graphics.drawLine(50, 50, 100, 80, "green")
+    // console.log("OCTANT 0"); graphics.drawLine(ptCenter.x, ptCenter.y, 80, 80, "white") // octant 0
+    console.log("OCTANT 1"); graphics.drawLine(ptCenter.x, ptCenter.y, 100, 50, "green") // octant 1
+    console.log("OCTANT 2"); graphics.drawLine(ptCenter.x, ptCenter.y, 100, 100, "blue") // octant 2
+    // console.log("OCTANT 3"); graphics.drawLine(ptCenter.x, ptCenter.y, 100, 135, "aqua") // octant 3
+    console.log("OCTANT 5"); graphics.drawLine(ptCenter.x, ptCenter.y, 50, 100, "pink") // octant 5
+    console.log("OCTANT 6"); graphics.drawLine(ptCenter.x, ptCenter.y, 50, 50, "red") // octant 6
 
-    // graphics.drawPixel(75, 75, "red")
-    // graphics.drawPixel(100, 75, "red")
     // DEBUG
 
     // requestAnimationFrame(animationLoop); 

@@ -64,8 +64,71 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         let dY = Math.abs(y2 - y1);
         let Pk = 2 * dY - dX;
         let currP = { x: x1, y: y1 }
+        let dirX = 1;
+        let dirY = 1;
 
         // determine octant
+        //   \ 7 | 0 /
+        //  6 \  |  / 1
+        // ------------
+        //  5 /  |  \ 2
+        //   / 4 | 3 \
+
+        if (x2 - x1 < 0) {
+            // left half // octants: 4, 5, 6, 7
+            if (y2 - y1 < 0) {
+                // top half // octants: 6, 7
+                if (y2 > x2) {
+                    console.log("OCTANT 7"); // DEBUG
+                    // octant 7
+
+                } else {
+                    console.log("OCTANT 6"); // DEBUG
+                    // octant 6
+                    dirX = -1;
+                }
+            } else {
+                // bottom half // octants: 4, 5
+                if (y2 > x2) {
+                    console.log("OCTANT 5"); // DEBUG
+                    // octant 5
+                    dirX = -1;
+                    dirY = -1;
+                } else {
+                    console.log("OCTANT 4"); // DEBUG
+                    // octant 4
+
+                }
+            }
+        } else {
+            console.log("right half") // DEBUG
+            // right half // octants: 0, 1, 2, 3
+            if (y2 - y1 < 0) {
+                console.log("top right corner") // DEBUG
+                // top right corner // octants: 0, 1
+                if (y2 > x2) {
+                    console.log("OCTANT 0"); // DEBUG
+                    // octant 0
+                    
+                } else {
+                    console.log("OCTANT 1"); // DEBUG
+                    // octant 1
+                    // default dirX and dirY
+                }
+            } else {
+                console.log("bottom right corner") // DEBUG
+                // bottom right corner // octants: 2, 3
+                if (y2 > x2) {
+                    console.log("OCTANT 3"); // DEBUG
+                    // octant 3
+
+                } else {
+                    console.log("OCTANT 2"); // DEBUG
+                    // octant 2
+                    dirY = -1;
+                }
+            }
+        }
 
 
         // draw line
@@ -76,9 +139,9 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
             drawPixel(currP.x, currP.y, color)
 
             // get point
-            currP.x += 1; // TODO: change to xdirection
-            if (Pk >= 0) { // TODO: why does this not work
-                currP.y += 1;
+            currP.x += dirX; // TODO: change to dirX
+            if (Pk >= 0) {
+                currP.y -= dirY; // TODO: change to dirY
                 Pk = Pk + 2 * dY - 2 * dX;
             } else {
                 Pk = Pk + 2 * dY;
