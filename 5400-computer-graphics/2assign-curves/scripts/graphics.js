@@ -76,6 +76,100 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawLine(x1, y1, x2, y2, color) {
+        let dX = Math.abs(x2 - x1);
+        let dY = Math.abs(y2 - y1);
+        let Pk = 2 * dY - dX;
+        let currP = { x: x1, y: y1 }
+        let dirX = 1;
+        let dirY = 1;
+        let dir = "horiz";
+
+        // determine octant
+        //   \ 7 | 0 /
+        //  6 \  |  / 1
+        // ------------
+        //  5 /  |  \ 2
+        //   / 4 | 3 \
+
+        if (x2 - x1 < 0) {
+            // left half // octants: 4, 5, 6, 7
+            if (y2 - y1 < 0) {
+                // top half // octants: 6, 7
+                if (dY > dX) {
+                    // octant 7
+                    dir = "vert";
+                    dirX = -1;
+                } else {
+                    // octant 6
+                    dirX = -1;
+                }
+            } else {
+                // bottom half // octants: 4, 5
+                if (dY > dX) {
+                    // octant 4
+                    dir = "vert";
+                    dirY = -1;
+                    dirX = -1;
+                } else {
+                    // octant 5
+                    dirX = -1;
+                    dirY = -1;
+                }
+            }
+        } else {
+            // right half // octants: 0, 1, 2, 3
+            if (y2 - y1 < 0) {
+                // top right corner // octants: 0, 1
+                if (dY > dX) {
+                    // octant 0
+                    // default dirX and dirY
+                    dir = "vert";
+                } else {
+                    // octant 1
+                    // default dirX and dirY
+                }
+            } else {
+                // bottom right corner // octants: 2, 3
+                if (y2 > x2) {
+                    // octant 3
+                    dir = "vert";
+                    dirY = -1;
+                } else {
+                    // octant 2
+                    dirY = -1;
+                }
+            }
+        }
+
+        // draw line
+        let notFinished = true;
+        while (notFinished)
+        {
+            // draw pixel
+            drawPixel(currP.x, currP.y, color)
+
+            // get point
+            if (dir == "vert") {
+                currP.y -= dirY;
+                if (Pk >= 0) {
+                    currP.x += dirX;
+                    Pk = Pk + 2 * dX - 2 * dY;
+                } else {
+                    Pk = Pk + 2 * dX;
+                }
+            } else {
+                currP.x += dirX;
+                if (Pk >= 0) {
+                    currP.y -= dirY;
+                    Pk = Pk + 2 * dY - 2 * dX;
+                } else {
+                    Pk = Pk + 2 * dY;
+                }
+            }
+
+            // end if we just drew the last pixel
+            if (currP.x == x2 || currP.y == y2) { notFinished = false; }
+        }
     }
 
     //------------------------------------------------------------------
@@ -84,6 +178,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawCurveHermite(controls, segments, showPoints, showLine, showControl, lineColor) {
+        
     }
 
     //------------------------------------------------------------------
@@ -92,6 +187,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawCurveCardinal(controls, segments, showPoints, showLine, showControl, lineColor) {
+
     }
 
     //------------------------------------------------------------------
@@ -100,6 +196,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawCurveBezier(controls, segments, showPoints, showLine, showControl, lineColor) {
+
     }
 
     //------------------------------------------------------------------
@@ -109,6 +206,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawCurveBezierMatrix(controls, segments, showPoints, showLine, showControl, lineColor) {
+
     }
 
     //------------------------------------------------------------------
