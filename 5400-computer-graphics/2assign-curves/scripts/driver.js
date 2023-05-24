@@ -10,7 +10,7 @@ MySample.main = (function(graphics) {
     //
     //------------------------------------------------------------------
     function update(elapsedTime) {
-        
+
     }
 
     //------------------------------------------------------------------
@@ -21,6 +21,17 @@ MySample.main = (function(graphics) {
     function render() {
         graphics.clear();
 
+    }
+
+    function debugRender() {
+        // hermite
+        graphics.drawCurve(0, [{x: 100, y: 500},  {x: 100, y: 100}, {x: 900, y: 900}, {x: 900, y: 500}], 1000, true, true, true, "aqua")
+        // cardinal
+        // graphics.drawCurve(1, [{x: 100, y: 500}, {x: 200, y: 600}, {x: 700, y: 700}, {x: 900, y: 500}, 1], 1000, true, true, true, "aqua")
+        // bezier
+        // graphics.drawCurve(2, [{x: 100, y: 500}, {x: 300, y: 300}, {x: 500, y: 700}, {x: 900, y: 300}], 1000, true, true, true, "aqua")
+        // matrix bezier
+        // graphics.drawCurve(3, [{x: 100, y: 500}, {x: 300, y: 300}, {x: 500, y: 700}, {x: 900, y: 300}], 1000, true, true, true, "aqua")
     }
 
     //------------------------------------------------------------------
@@ -39,14 +50,7 @@ MySample.main = (function(graphics) {
     }
 
     console.log('initializing...');
+    debugRender()
     // requestAnimationFrame(animationLoop);
-    // DEBUG
-    graphics.drawCurve(0, [{x: 100, y: 500}, {x: 900, y: 500}, {x: 200, y: 0}, {x: -200, y: 0}], 100, true, true, false, "aqua")
-    graphics.drawCurve(0, [{x: 100, y: 500}, {x: 900, y: 500}, {x: 200, y: 500}, {x: -200, y: -500}], 100, true, false, false, "lightpink")
-    graphics.drawCurve(1, [
-        {x:   0, y: 500}, {x: 100, y: 300}, {x: 200, y: 700}, {x: 300, y: 200}, {x: 400, y: 800},
-        {x: 500, y: 400}, {x: 600, y: 600}, {x: 700, y: 500}, {x: 800, y: 500}, {x: 900, y: 700}
-    ], 10, true, false, false, "white")
-    // END DEBUG
 
 }(MySample.graphics));

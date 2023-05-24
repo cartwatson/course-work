@@ -13,6 +13,10 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     let deltaX = canvas.width / pixelsX;
     let deltaY = canvas.height / pixelsY;
 
+    let lineColorDEBUG    = "red"
+    let pointColorDEBUG   = "aqua"
+    let controlColorDEBUG = "lightpink"
+
     //------------------------------------------------------------------
     //
     // Public function that allows the client code to clear the canvas.
@@ -147,6 +151,8 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         {
             // draw pixel
             drawPixel(currP.x, currP.y, color)
+            // console.log("drew a pixel")//DEBUG
+            // console.log(currP.x, currP.y)//DEBUG
 
             // get point
             if (dir == "vert") {
@@ -174,33 +180,16 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
 
     //------------------------------------------------------------------
     //
-    // Handles boolean logic for curve drawing
+    // Draw lines inbetween set of given points
     //
     //------------------------------------------------------------------
-    function drawPointsLineControl(startPt, endPt, points, showPoints, showLine, showControl, lineColor) {
-        // print line
-        if (showLine) {
-            for (let i = 0; i < points.length - 1; i++) {
-                // grab point and next point
-                let start = { x: points[i].x, y: points[i].y }
-                let end   = { x: points[i+1].x, y: points[i+1].y }
-                
-                console.log(start.x, start.y, end.x, end.y) // DEBUG
-                // drawLine(start.x, start.y, end.x, end.y, lineColor) // TODO: FIX
-            }
-        }
-
-        // print points
-        if (showPoints) {
-            for (let i = 0; i < points.length; i++) { drawPoint(points[i].x, points[i].y, lineColor) }
-        // print control points
-        } else if (showControl) {
-            drawPoint(startPt.x, startPt.y, lineColor)
-            drawPoint(endPt.x, endPt.y, lineColor)
+    function drawLines(points, lineColor) {
+        for (let i = 0; i < points.length - 1; i++) {
+            // console.log(points[i].x, points[i].y, points[i+1].x, points[i+1].y)//DEBUG
+            // drawLine(points[i].x, points[i].x, points[i+1].x, points[i+1].y, lineColor)
         }
     }
 
-    
     //------------------------------------------------------------------
     //
     // Renders an Hermite curve based on the input parameters.
@@ -213,6 +202,66 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         let tanEndPt   = { x: controls[2].x, y: controls[2].y }
         let endPt      = { x: controls[3].x, y: controls[3].y }
         let points = []
+
+        // divide curve into segments
+        for (let u = 0; u <= 1; u += 1 / segments) {
+            // calc t^2 and t^3
+            let u2 = u  * u
+            let u3 = u2 * u
+
+            // calculate basis functions
+            let h1 =  2 * u3 - 3 * u2 + 1
+            let h2 = -2 * u3 + 3 * u2
+            let h3 =      u3 - 2 * u2 + u
+            let h4 =      u3 -     u2
+
+            // calc x and y & store point
+            points.push({
+                x: Math.round(h1 * startPt.x + h2 * endPt.x + h3 * tanStartPt.x + h4 * tanEndPt.x),
+                y: Math.round(h1 * startPt.y + h2 * endPt.y + h3 * tanStartPt.y + h4 * tanEndPt.y),
+            })
+        }
+
+        // draw curve
+        drawLines(points, lineColor)
+
+        // handle boolean debug info
+        // print line
+        if (showLine) {
+            drawLine(startPt.x, startPt.y, tanStartPt.x, tanStartPt.y, lineColorDEBUG)
+            drawLine(endPt.x, endPt.y, tanEndPt.x, tanEndPt.y, lineColorDEBUG)
+        }
+
+        // print calculated points
+        if (showPoints) {
+            for (let i = 0; i < points.length; i++) {
+                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
+            }
+        }
+        
+        // print control points
+        if (showControl) {
+            drawPoint(controls[0].x, controls[0].y, controlColorDEBUG)
+            drawPoint(tanStartPt.x,  tanStartPt.y,  controlColorDEBUG)
+            drawPoint(tanEndPt.x,    tanEndPt.y,    controlColorDEBUG)
+            drawPoint(controls[3].x, controls[3].y, controlColorDEBUG)
+        }
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Renders a Cardinal curve based on the input parameters.
+    //
+    //------------------------------------------------------------------
+    function drawCurveCardinal(controls, segments, showPoints, showLine, showControl, lineColor) {
+        let points = []
+        let tension = controls[4] //TODO: TEST
+
+        // calculate points
+        let p0 = controls[0]
+        let p1 = controls[1]
+        let p2 = controls[2]
+        let p3 = controls[3]
 
         // divide curve into segments
         for (let t = 0; t <= 1; t += 1 / segments) {
@@ -228,54 +277,34 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
 
             // calc x and y & store point
             points.push({
-                x: h1 * startPt.x + h2 * endPt.x + h3 * tanStartPt.x + h4 * tanEndPt.x,
-                y: h1 * startPt.y + h2 * endPt.y + h3 * tanStartPt.y + h4 * tanEndPt.y,
+                x: Math.round(h1 * p1.x + h2 * p2.x + h3 * (p2.x - p0.x) * tension + h4 * (p3.x - p1.x) * tension),
+                y: Math.round(h1 * p1.y + h2 * p2.y + h3 * (p2.y - p0.y) * tension + h4 * (p3.y - p1.y) * tension),
             })
         }
 
-        drawPointsLineControl(startPt, endPt, points, showPoints, showLine, showControl, lineColor)
-    }
+        // draw curve
+        drawLines(points, lineColor)
 
-    //------------------------------------------------------------------
-    //
-    // Renders a Cardinal curve based on the input parameters.
-    //
-    //------------------------------------------------------------------
-    function drawCurveCardinal(controls, segments, showPoints, showLine, showControl, lineColor) {
-        let points = []
-        let startPt = controls[0]
-        let endPt   = controls.slice(-1)
-        let tension = 0.5 //TODO: TEST
-
-        // calculate points
-        for (let i = 0; i < controls.length - 4; i++) {
-            let p0 = controls[i+0]
-            let p1 = controls[i+1]
-            let p2 = controls[i+2]
-            let p3 = controls[i+3]
-
-            // divide curve into segments
-            for (let t = 0; t <= 1; t += 1 / segments) {
-                // calc t^2 and t^3
-                let t2 = t  * t
-                let t3 = t2 * t
-
-                // calculate basis functions
-                let h1 =  2 * t3 - 3 * t2 + 1
-                let h2 = -2 * t3 + 3 * t2
-                let h3 =      t3 - 2 * t2 + t
-                let h4 =      t3 -     t2
-
-                // calc x and y & store point
-                points.push({
-                    x: h1 * p1.x + h2 * p2.x + h3 * (p2.x - p0.x) * tension + h4 * (p3.x - p1.x) * tension,
-                    y: h1 * p1.y + h2 * p2.y + h3 * (p2.y - p0.y) * tension + h4 * (p3.y - p1.y) * tension,
-                })
-            }
+        // handle boolean debug info
+        // print line
+        if (showLine) {
+            drawLine(p0.x, p0.y, p1.x, p1.y, lineColorDEBUG)
+            drawLine(p3.x, p3.y, p2.x, p2.y, lineColorDEBUG)
         }
 
-        // boolean logic here
-        drawPointsLineControl(startPt, endPt, points, showPoints, showLine, showControl, lineColor)
+        // print calculated points
+        if (showPoints) {
+            for (let i = 0; i < points.length; i++) {
+                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
+            }
+        }
+        
+        // print control points
+        if (showControl) {
+            for (let i = 0; i < controls.length; i++) {
+                drawPoint(controls[i].x, controls[i].y, controlColorDEBUG)
+            }
+        }
     }
 
     //------------------------------------------------------------------
@@ -285,22 +314,44 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //------------------------------------------------------------------
     function drawCurveBezier(controls, segments, showPoints, showLine, showControl, lineColor) {
         let points  = []
-        let startPt = controls[0]
-        let endPt   = controls.slice(-1)
 
-        let len = controls.length - 1
+        let n = controls.length - 1
         for (let t = 0; t <= 1; t += 1 / segments) {
-            for (let i = 0; i < len; i++) {
-                coefficient = binomialCoefficient(len, i) * (1 - t)**(len - i) * t**i
-                points.push({
-                    x: coefficient * controlPoints[i].x,
-                    y: coefficient * controlPoints[i].y
-                })
+            let point = {x: 0, y: 0}
+            for (let k = 0; k < controls.length; k++) {
+                let coefficient = binomialCoefficient(n, k) * (1 - t)**(n - k) * t**k
+                point.x += coefficient * controls[k].x
+                point.y += coefficient * controls[k].y
+            }
+
+            points.push({ x: Math.round(point.x), y: Math.round(point.y) })
+        }
+
+        // draw curve
+        drawLines(points, lineColor)
+
+        // handle boolean debug info
+        // print line between related control points
+        if (showLine) {
+            // drawLines(controls, lineColorDEBUG)
+            for (let i = 0; i < controls.length -1; i++) {
+                drawLine(controls[i].x, controls[i].y, controls[i+1].x, controls[i+1].y, lineColorDEBUG)
             }
         }
 
-        // boolean logic here
-        drawPointsLineControl(startPt, endPt, points, showPoints, showLine, showControl, lineColor)
+        // print calculated points
+        if (showPoints) {
+            for (let i = 0; i < points.length; i++) {
+                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
+            }
+        }
+        
+        // print control points
+        if (showControl) {
+            for (let i = 0; i < controls.length; i++) {
+                drawPoint(controls[i].x, controls[i].y, controlColorDEBUG)
+            }
+        }
     }
 
     // Helper function to calculate the binomial coefficient of two numbers
@@ -308,7 +359,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     function binomialCoefficient(n, k) {
         let coeff = 1;
         for (let x = n-k+1; x <= n; x++) { coeff *= x }
-        for (x = 1; x <= k; x++) { coeff /= x }
+        for (let x = 1; x <= k; x++) { coeff /= x }
         return coeff;
     }
 
@@ -319,7 +370,61 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     //
     //------------------------------------------------------------------
     function drawCurveBezierMatrix(controls, segments, showPoints, showLine, showControl, lineColor) {
+        // Create an array to store the computed points
+        let points = [];
 
+        // calculate points
+        let p0 = controls[0] // start
+        let p1 = controls[1] 
+        let p2 = controls[2]
+        let p3 = controls[3] // end
+
+        // divide curve into segments
+        for (let u = 0; u <= 1; u += 1 / segments) {
+            // calc t^2 and t^3
+            let u2 = u  * u
+            let u3 = u2 * u
+
+            // calculate basis functions
+            let h1 =      u3
+            let h2 = -3 * u3 + 3 * u2
+            let h3 =  3 * u3 - 6 * u2 + 3 * u
+            let h4 = -1 * u3 - 3 * u2 - 3 * u + 1
+
+            // calc x and y & store point
+            points.push({
+                x: Math.round(h1 * p0.x + h2 * p1.x + h3 * p2.x + h4 * p3.x),
+                y: Math.round(h1 * p0.y + h2 * p1.y + h3 * p2.y + h4 * p3.y),
+            })
+        }
+
+        console.log(points)
+
+        // draw curve
+        drawLines(points, lineColor)
+
+        // handle boolean debug info
+        // print line between related control points
+        if (showLine) {
+            // drawLines(controls, lineColorDEBUG)
+            for (let i = 0; i < controls.length -1; i++) {
+                drawLine(controls[i].x, controls[i].y, controls[i+1].x, controls[i+1].y, lineColorDEBUG)
+            }
+        }
+
+        // print calculated points
+        if (showPoints) {
+            for (let i = 0; i < points.length; i++) {
+                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
+            }
+        }
+        
+        // print control points
+        if (showControl) {
+            for (let i = 0; i < controls.length; i++) {
+                drawPoint(controls[i].x, controls[i].y, controlColorDEBUG)
+            }
+        }
     }
 
     //------------------------------------------------------------------
