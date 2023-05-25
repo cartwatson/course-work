@@ -174,7 +174,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
             }
 
             // end if we just drew the last pixel
-            if (currP.x == x2 || currP.y == y2) { notFinished = false; }
+            if (currP.x == x2 || currP.y == y2 || currP.x == x1 || currP.y == y1) { notFinished = false; }
         }
     }
 
@@ -186,7 +186,7 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     function drawLines(points, lineColor) {
         for (let i = 0; i < points.length - 1; i++) {
             // console.log(points[i].x, points[i].y, points[i+1].x, points[i+1].y)//DEBUG
-            // drawLine(points[i].x, points[i].x, points[i+1].x, points[i+1].y, lineColor)
+            drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, lineColor)
         }
     }
 
@@ -316,10 +316,13 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         let points  = []
 
         let n = controls.length - 1
-        for (let t = 0; t <= 1; t += 1 / segments) {
+        // for (let u = 0; u <= 1; u += 1 / segments) {
+        for(let i = 0; i <= segments; i++) {
+            const u = i / segments;
+            
             let point = {x: 0, y: 0}
             for (let k = 0; k < controls.length; k++) {
-                let coefficient = binomialCoefficient(n, k) * (1 - t)**(n - k) * t**k
+                let coefficient = binomialCoefficient(n, k) * (1 - u)**(n - k) * u**k
                 point.x += coefficient * controls[k].x
                 point.y += coefficient * controls[k].y
             }
@@ -356,11 +359,20 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
 
     // Helper function to calculate the binomial coefficient of two numbers
     // adjusted from https://www.w3resource.com/javascript-exercises/javascript-math-exercise-20.php
-    function binomialCoefficient(n, k) {
-        let coeff = 1;
-        for (let x = n-k+1; x <= n; x++) { coeff *= x }
-        for (let x = 1; x <= k; x++) { coeff /= x }
-        return coeff;
+    // function binomialCoefficient(n, k) {
+    //     let coeff = 1;
+    //     for (let x = n-k+1; x <= n; x++) { coeff *= x }
+    //     for (let x = 1; x <= k; x++) { coeff /= x }
+    //     return coeff;
+    // }
+    function binomialCoefficient (n, k) {
+        let numerator = 1;
+        let denominator = 1;
+        for (let i = 0; i < k; i++) {
+            numerator *= (n - i);
+            denominator *= (i + 1);
+        }
+        return numerator / denominator;
     }
 
     //------------------------------------------------------------------
