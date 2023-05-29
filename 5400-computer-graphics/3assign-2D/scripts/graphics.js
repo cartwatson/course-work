@@ -97,15 +97,14 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
 
         if (x2 - x1 < 0) {
             // left half // octants: 4, 5, 6, 7
+            dirX = -1;
             if (y2 - y1 < 0) {
                 // top half // octants: 6, 7
                 if (dY > dX) {
                     // octant 7
                     dir = "vert";
-                    dirX = -1;
                 } else {
                     // octant 6
-                    dirX = -1;
                 }
             } else {
                 // bottom half // octants: 4, 5
@@ -113,10 +112,8 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
                     // octant 4
                     dir = "vert";
                     dirY = -1;
-                    dirX = -1;
                 } else {
                     // octant 5
-                    dirX = -1;
                     dirY = -1;
                 }
             }
@@ -147,7 +144,10 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
 
         // check if totally vertical line
         // not sure why this is necessary but it makes it work
-        if (x1 - x2 === 0) { Pk = -1 }
+        if (dX === 0) { Pk = -1; dir = "vert"; }
+        if (dY === 0) { dir = "horiz"; }
+
+        // console.log(dirX, dirY, dir)
 
         // draw line
         let notFinished = true;
@@ -178,12 +178,22 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
                 }
             }
 
-            // console.log(currP.x, currP.y)//DEBUG
-
             // end if we just drew the last pixel
-            if (currP.x == x2 && currP.y == y2 || currP.x == x1 && currP.y == y1) {
-                drawPixel(currP.x, currP.y, color)
-                notFinished = false;
+            if (dX !== 0 && dY !== 0) {
+                if (currP.x == x2 || currP.y == y2 || currP.x == x1 || currP.y == y1) {
+                    drawPixel(currP.x, currP.y, color)
+                    notFinished = false;
+                }
+            } else if (dX === 0) {
+                if (currP.y == y2 || currP.y == y1) {
+                    drawPixel(currP.x, currP.y, color)
+                    notFinished = false;
+                }
+            } else if (dY === 0) {
+                if (currP.x == x2 || currP.x == x1) {
+                    drawPixel(currP.x, currP.y, color)
+                    notFinished = false;
+                }
             }
         }
     }
@@ -197,64 +207,6 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         for (let i = 0; i < points.length - 1; i++) {
             // console.log(points[i].x, points[i].y, points[i+1].x, points[i+1].y)//DEBUG
             drawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, lineColor)
-        }
-    }
-
-    //------------------------------------------------------------------
-    //
-    // Renders an Hermite curve based on the input parameters.
-    //
-    //------------------------------------------------------------------
-    function drawCurveHermite(controls, segments, showPoints, showLine, showControl, lineColor) {
-        // parse controls & init
-        let startPt    = { x: controls[0].x, y: controls[0].y }
-        let tanStartPt = { x: controls[1].x, y: controls[1].y }
-        let tanEndPt   = { x: controls[2].x, y: controls[2].y }
-        let endPt      = { x: controls[3].x, y: controls[3].y }
-        let points = []
-
-        // divide curve into segments
-        for (let u = 0; u <= 1; u += 1 / segments) {
-            // calc t^2 and t^3
-            let u2 = u  * u
-            let u3 = u2 * u
-
-            // calculate basis functions
-            let h1 =  2 * u3 - 3 * u2 + 1
-            let h2 = -2 * u3 + 3 * u2
-            let h3 =      u3 - 2 * u2 + u
-            let h4 =      u3 -     u2
-
-            // calc x and y & store point
-            points.push({
-                x: Math.round(h1 * startPt.x + h2 * endPt.x + h3 * tanStartPt.x + h4 * tanEndPt.x),
-                y: Math.round(h1 * startPt.y + h2 * endPt.y + h3 * tanStartPt.y + h4 * tanEndPt.y),
-            })
-        }
-
-        // draw curve
-        drawLines(points, lineColor)
-
-        // handle boolean debug info
-        // print line
-        if (showLine) {
-            drawLine(startPt.x, startPt.y, tanStartPt.x, tanStartPt.y, lineColorDEBUG)
-            drawLine(endPt.x, endPt.y, tanEndPt.x, tanEndPt.y, lineColorDEBUG)
-        }
-
-        // print calculated points
-        if (showPoints) {
-            for (let i = 0; i < points.length; i++) {
-                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
-            }
-        }
-        
-        // print control points
-        if (showControl) {
-            drawPoint(controls[0].x, controls[0].y, controlColorDEBUG)
-            drawPoint(tanStartPt.x,  tanStartPt.y,  controlColorDEBUG)
-            drawPoint(tanEndPt.x,    tanEndPt.y,    controlColorDEBUG)
-            drawPoint(controls[3].x, controls[3].y, controlColorDEBUG)
         }
     }
 
@@ -379,96 +331,39 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         return numerator / denominator;
     }
 
-    //------------------------------------------------------------------
-    //
-    // Renders a Bezier curve based on the input parameters; using the matrix form.
-    // This follows the Mathematics for Game Programmers form.
-    //
-    //------------------------------------------------------------------
-    function drawCurveBezierMatrix(controls, segments, showPoints, showLine, showControl, lineColor) {
-        // Create an array to store the computed points
-        let points = [];
-
-        // calculate points
-        let p0 = controls[0] // start
-        let p1 = controls[1] 
-        let p2 = controls[2]
-        let p3 = controls[3] // end
-
-        // divide curve into segments
-        for (let u = 0; u <= 1; u += 1 / segments) {
-            // calc t^2 and t^3
-            let u2 = u  * u
-            let u3 = u2 * u
-
-            // calculate basis functions
-            let h1 =      u3
-            let h2 = -3 * u3 + 3 * u2
-            let h3 =  3 * u3 - 6 * u2 + 3 * u
-            let h4 = -1 * u3 - 3 * u2 - 3 * u + 1
-
-            // calc x and y & store point
-            points.push({
-                x: Math.round(h1 * p0.x + h2 * p1.x + h3 * p2.x + h4 * p3.x),
-                y: Math.round(h1 * p0.y + h2 * p1.y + h3 * p2.y + h4 * p3.y),
-            })
-        }
-
-        console.log(points)
-
-        // draw curve
-        drawLines(points, lineColor)
-
-        // handle boolean debug info
-        // print line between related control points
-        if (showLine) {
-            // drawLines(controls, lineColorDEBUG)
-            for (let i = 0; i < controls.length -1; i++) {
-                drawLine(controls[i].x, controls[i].y, controls[i+1].x, controls[i+1].y, lineColorDEBUG)
-            }
-        }
-
-        // print calculated points
-        if (showPoints) {
-            for (let i = 0; i < points.length; i++) {
-                drawPoint(points[i].x, points[i].y, pointColorDEBUG)
-            }
-        }
-        
-        // print control points
-        if (showControl) {
-            for (let i = 0; i < controls.length; i++) {
-                drawPoint(controls[i].x, controls[i].y, controlColorDEBUG)
-            }
-        }
-    }
 
     //------------------------------------------------------------------
     //
     // Entry point for rendering the different types of curves.
-    // I know a different (functional) JavaScript pattern could be used
-    // here.  My goal was to keep it looking C++'ish to keep it familiar
-    // to those not expert in JavaScript.
     //
     //------------------------------------------------------------------
     function drawCurve(type, controls, segments, showPoints, showLine, showControl, lineColor) {
         switch (type) {
-            case api.Curve.Hermite:
-                drawCurveHermite(controls, segments, showPoints, showLine, showControl, lineColor);
-                break;
             case api.Curve.Cardinal:
                 drawCurveCardinal(controls, segments, showPoints, showLine, showControl, lineColor);
                 break;
             case api.Curve.Bezier:
                 drawCurveBezier(controls, segments, showPoints, showLine, showControl, lineColor);
                 break;
-            case api.Curve.BezierMatrix:
-                drawCurveBezierMatrix(controls, segments, showPoints, showLine, showControl, lineColor);
-                break;
         }
     }
 
 // --ASSIGN 3-----------------------------------------------------------
+
+    //------------------------------------------------------------------
+    //
+    // Translates a point of the form: { x, y }
+    //
+    // distance: { x, y }
+    //
+    //------------------------------------------------------------------
+    function translatePoint(point, distance) {
+        // keep it functional
+        return {
+            x: point.x + distance.x,
+            y: point.y - distance.y
+        }
+    }
 
     //------------------------------------------------------------------
     //
@@ -492,8 +387,6 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         // get points in world coords
         let pointsInWorldCoords = []
         for (let i = 0; i < primitive.verts.length; i++) {
-            // console.log(points[i].x + center.x)
-            // console.log(points[i].y + center.y)
             pointsInWorldCoords.push({
                 x: primitive.verts[i].x + primitive.center.x,
                 y: primitive.verts[i].y + primitive.center.y
@@ -526,10 +419,147 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         }
 
         // keep it functional
-        return {verts: primitive.verts, center: {
-            x: primitive.center.x + distance.x,
-            y: primitive.center.y + distance.y, // should be subtract but that breaks it
-        }}
+        return {verts: primitive.verts, center: translatePoint(primitive.center, distance)}
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Scales a primitive of the form: {
+    //    verts: [],    // Must have at least 2 verts
+    //    center: { x, y }
+    // }
+    //
+    // scale: { x, y }
+    //
+    //------------------------------------------------------------------
+    function scalePrimitive(primitive, scale) {
+        // return if not enough vertices
+        if (primitive.verts.length < 2) {
+            console.log("NOT ENOUGH VERTS")
+            return
+        }
+
+        // scale vertices
+        let newVerts = []
+        for (let i = 0; i < primitive.verts.length; i++) {
+            newVerts.push({
+                x: Math.round(primitive.verts[i].x * scale.x),
+                y: Math.round(primitive.verts[i].y * scale.y),
+            })
+        }
+
+        // keep it functional
+        return {verts: newVerts, center: primitive.center}
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Rotates a primitive of the form: {
+    //    verts: [],    // Must have at least 2 verts
+    //    center: { x, y }
+    // }
+    //
+    // angle: radians
+    //
+    //------------------------------------------------------------------
+    function rotatePrimitive(primitive, angle) {
+        // return if not enough vertices
+        if (primitive.verts.length < 2) {
+            console.log("NOT ENOUGH VERTS")
+            return
+        }
+
+        // rotate vertices
+        let newVerts = []
+        for (let i = 0; i < primitive.verts.length; i++) {
+            newVerts.push({
+                x: Math.round(primitive.verts[i].x * Math.cos(angle) - primitive.verts[i].y * Math.sin(angle)),
+                y: Math.round(primitive.verts[i].x * Math.sin(angle) + primitive.verts[i].y * Math.cos(angle)),
+            })
+        }
+
+        // keep it functional
+        return {verts: newVerts, center: primitive.center}
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Translates a curve.
+    //    type: Cardinal, Bezier
+    //    controls: appropriate to the curve type
+    //    distance: { x, y }
+    //console.logprim
+    //------------------------------------------------------------------
+    function translateCurve(type, controls, distance) {
+        let translatedControls = []
+        for (let i = 0; i < controls.length; i++) {
+            translatedControls.push(translatePoint(controls[i], distance))
+        }
+
+        return translatedControls
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Scales a curve relative to its center.
+    //    type: Cardinal, Bezier
+    //    controls: appropriate to the curve type
+    //    scale: { x, y }
+    //
+    //------------------------------------------------------------------
+    function scaleCurve(type, controls, scale) {
+        let center = getCenterCurve(type, controls)
+
+        // scale vertices
+        let newControls = []
+        for (let i = 0; i < controls.length; i++) {
+            newControls.push({
+                x: Math.round(controls[i].x * scale.x) + center.x / 2,
+                y: Math.round(controls[i].y * scale.y) + center.y / 2,
+            })
+        }
+
+        return newControls
+    }
+
+    //------------------------------------------------------------------
+    //
+    // Rotates a curve about its center.
+    //    type: Cardinal, Bezier
+    //    controls: appropriate to the curve type
+    //    angle: radians
+    //
+    //------------------------------------------------------------------
+    function rotateCurve(type, controls, angle) {
+        let center = getCenterCurve(type, controls)
+
+        // scale vertices
+        let newControls = []
+        for (let i = 0; i < controls.length; i++) {
+            newControls.push({
+                x: Math.round((controls[i].x - center.x) * Math.cos(angle) - (controls[i].y - center.y) * Math.sin(angle) + center.x),
+                y: Math.round((controls[i].x - center.x) * Math.sin(angle) + (controls[i].y - center.y) * Math.cos(angle) + center.y),
+            })
+        }
+
+        return newControls
+    }
+
+    function getCenterCurve(type, controls) {
+        switch (type) {
+            case api.Curve.Cardinal:
+                return {
+                    x: (controls[1].x + controls[2].x) / 2,
+                    y: (controls[1].y + controls[2].y) / 2,
+                }
+            case api.Curve.Bezier:
+                return {
+                    x: (controls[0].x + controls[3].x) / 2,
+                    y: (controls[0].y + controls[3].y) / 2,
+                }
+            default:
+                return { x: 0, y: 0 }
+        }
     }
 
 // --ASSIGN 3 END-------------------------------------------------------
@@ -543,11 +573,11 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
         drawCurve: drawCurve,
         drawPrimitive: drawPrimitive,
         translatePrimitive: translatePrimitive,
-        // scalePrimitive: scalePrimitive,
-        // rotatePrimitive: rotatePrimitive,
-        // translateCurve: translateCurve,
-        // scaleCurve: scaleCurve,
-        // rotateCurve: rotateCurve
+        scalePrimitive: scalePrimitive,
+        rotatePrimitive: rotatePrimitive,
+        translateCurve: translateCurve,
+        scaleCurve: scaleCurve,
+        rotateCurve: rotateCurve
     };
 
     Object.defineProperty(api, 'sizeX', {
@@ -560,10 +590,8 @@ MySample.graphics = (function(pixelsX, pixelsY, showPixels) {
     });
     Object.defineProperty(api, 'Curve', {
         value: Object.freeze({
-            Hermite: 0,
-            Cardinal: 1,
-            Bezier: 2,
-            BezierMatrix: 3
+            Cardinal: 0,
+            Bezier: 1,
         }),
         writable: false
     });
