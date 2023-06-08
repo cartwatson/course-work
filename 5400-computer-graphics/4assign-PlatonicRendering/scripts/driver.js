@@ -11,14 +11,21 @@ MySample.main = (function() {
     let vertices = new Float32Array([
         0.0, 0.5, 0.0,
         0.5, 0.0, 0.0,
-        -0.5, 0.0, 0.0
+        -0.5, 0.0, 0.0,
+        0.0, 0.25, 0.0
     ]);
     let vertexColors = new Float32Array([
-        .0, 0.0, 0.0,
-        1.0, 1.0, 1.0,
-        0.0, 0.0, 1.0
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
     ]);
-    let indices = new Uint16Array([ 0, 2, 1 ]);
+    let indices = new Uint16Array([
+        0, 1, 2,
+        0, 2, 3,
+        0, 3, 1,
+        1, 3, 2,
+    ]);
 
     // Step 4 : Prepare Buffer Objects
     // vertex buffer
