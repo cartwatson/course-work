@@ -105,37 +105,43 @@ MySample.main = (function() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     
     // Step 5 : Prepare Shaders
-    // Vertex Shader
-    // let vertexShaderSource = loadFileFromServer('../shaders/simple.vert') // TODO: make this work using promise chaining
-    let vertexShaderSource = `#version 300 es\nuniform mat4 uProjection; uniform mat4 uThing; in vec4 aPosition; in vec4 aColor; out vec4 vColor; void main() { gl_Position = uThing * aPosition; vColor = aColor; }`
-    let vertexShader = gl.createShader(gl.VERTEX_SHADER);
-    gl.shaderSource(vertexShader, vertexShaderSource);
-    gl.compileShader(vertexShader);
+    let vertexShader = null;
+    let fragmentShader = null;
+    let shaderProgram = null;
 
-    // Fragment Shader
-    // let fragmentShaderSource = loadFileFromServer('../shaders/simple.frag') // TODO: make this work using promise chaining
-    let fragmentShaderSource = `#version 300 es\nprecision lowp float; in vec4 vColor; out vec4 outColor; void main() { outColor = vColor; }`
-    let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, fragmentShaderSource);
-    gl.compileShader(fragmentShader);
+    loadFileFromServer('../shaders/simple.vert')
+    .then(source => {
+        // console.log(source)//DEBUG
+        vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vertexShader, source);
+        gl.compileShader(vertexShader);
+        return loadFileFromServer('../shaders/simple.frag')
+    }).then(source => {
+        // console.log(source)//DEBUG
+        fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
+        gl.shaderSource(fragmentShader, source);
+        gl.compileShader(fragmentShader);
+    }).then(() => {
+        shaderProgram = gl.createProgram()
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+        gl.useProgram(shaderProgram);
 
-    // Create the Shader Program
-    let shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
-    gl.linkProgram(shaderProgram);
-    gl.useProgram(shaderProgram);
+        // STEP 6 : Specify Shader & Buffer Object Attributes
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        let position = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, vertices.BYTES_PER_ELEMENT * 3, 0);
 
-    // STEP 6 : Specify Shader & Buffer Object Attributes
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    let position = gl.getAttribLocation(shaderProgram, 'aPosition');
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 3, gl.FLOAT, false, vertices.BYTES_PER_ELEMENT * 3, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+        let color = gl.getAttribLocation(shaderProgram, 'aColor');
+        gl.enableVertexAttribArray(color);
+        gl.vertexAttribPointer(color, 3, gl.FLOAT, false, vertexColors.BYTES_PER_ELEMENT * 3, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-    let color = gl.getAttribLocation(shaderProgram, 'aColor');
-    gl.enableVertexAttribArray(color);
-    gl.vertexAttribPointer(color, 3, gl.FLOAT, false, vertexColors.BYTES_PER_ELEMENT * 3, 0);
+        // Step 7 : Request Animation Frame
+        requestAnimationFrame(animationLoop);
+    });
 
     //------------------------------------------------------------------
     //
@@ -186,12 +192,7 @@ MySample.main = (function() {
     //------------------------------------------------------------------
     function render() {
         // Step 8 : Reset Framebuffer & Depth Buffer
-        gl.clearColor(
-            0.392156862740980392156862745098,
-            0.58431372549019607843137254901961,
-            0.92941176470588235294117647058824,
-            1.0
-        );
+        gl.clearColor(0.392156862740980392156862745098, 0.58431372549019607843137254901961, 0.92941176470588235294117647058824, 1.0);
         gl.clearDepth(1.0);
         gl.depthFunc(gl.LEQUAL);
         gl.enable(gl.DEPTH_TEST);
@@ -208,14 +209,10 @@ MySample.main = (function() {
     //
     //------------------------------------------------------------------
     function animationLoop(time) {
-
+        
         update();
         render();
 
         requestAnimationFrame(animationLoop);
     }
-
-    console.log('initializing...');
-    // Step 7 : Request Animation Frame
-    requestAnimationFrame(animationLoop);
 }());

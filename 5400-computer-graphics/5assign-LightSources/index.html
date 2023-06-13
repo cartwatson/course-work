@@ -2,7 +2,7 @@
 <html lang = "en-US">
 <head>
     <meta charset = "UTF-8">
-    <title>Assignment 4 - Platonic Rendering</title>
+    <title>Assignment 5 - Shedding Some Light</title>
 </head>
 <body>
     <canvas id = "canvas-main" width = "800" height = "800"></canvas>
@@ -16,9 +16,12 @@
 </body>
 </html>
 
-
-<!-- TODO
+<!-- TODO - In order
+    [X] fix code from last assignment to read from file
+    [] uses perspective projection
+        needs to pass the uProjection matrix in to simple.vert
     [] Render any two models from the standford 3d scanning repo
+        [] You'll need to modify the server.js file to add one more MIME type: '.ply': 'text/plain'
     [] Write code to parse data from .ply files
         no usage of existing libraries
     [] Per vertex, diffuse lighting
@@ -28,6 +31,5 @@
         [] each should be a different color
         [] each should be in a different location
         [] diffuse lighting only
-    [] uses perspective projection
     [] interesting animation
 -->
