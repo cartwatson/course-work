@@ -4,6 +4,7 @@ let fs = require('fs');
 let mimeTypes = {
     '.vert': 'text/plain',
     '.frag': 'text/plain',
+    '.ply': 'text/plain',
     '.js': 'text/javascript',
     '.html': 'text/html',
     '.css': 'text/css'
