@@ -10,5 +10,6 @@ void main()
 {
     //gl_Position = uProjection * uThing * aPosition;
     gl_Position = uThing * aPosition;
-    vColor = aColor;
+    //vColor = aColor;
+    vColor = vec4(1, 0, 0, 1);
 }

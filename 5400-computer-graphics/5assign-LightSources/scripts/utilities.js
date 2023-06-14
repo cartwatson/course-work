@@ -13,7 +13,8 @@ function loadFileFromServer(filename) {
 // Helper function to parse .ply files with the format ascii
 //
 //------------------------------------------------------------------
-function parsePly(lines) {
+function parsePly(data) {
+    const lines = data.split('\n');
     let dataIndex = 0;
     
     let vertexCount = null;
@@ -30,17 +31,16 @@ function parsePly(lines) {
         }
     }
     
-    let v =[];
+    let v = []; // [x, y, z]
     // get vertices
     for (let i = dataIndex; i < dataIndex + vertexCount; i++) {
         const vertexData = lines[i].split(' ');
-        v.push({
-            x: parseFloat(vertexData[0]),
-            y: parseFloat(vertexData[1]),
-            z: parseFloat(vertexData[2])
-        });
+        v.push([
+            parseFloat(vertexData[0]),
+            parseFloat(vertexData[1]),
+            parseFloat(vertexData[2])
+        ]);
     }
-    let vertices = new Float32Array(v);
     
     let I = [];
     // get indices
@@ -50,11 +50,15 @@ function parsePly(lines) {
         faceIndices.pop();
         I.push(faceIndices);
     }
-    let indices = new Uint32Array(I);
 
     // compute normals
-    let normals = computeNormals(vertices, indices);
-
+    let n = computeNormals(v, I);
+    
+    // get in usable form
+    let vertices = new Float32Array(v);
+    let indices = new Uint32Array(I);
+    let normals = new Float32Array(n);
+    
     return {vertices, indices, normals}
 }
 
@@ -63,12 +67,77 @@ function parsePly(lines) {
 // Helper function to compute normals
 //
 //------------------------------------------------------------------
-function computeNormals(verticies, indices) {
-    let normals = new Float32Array([]);
+function computeNormals(vertices, indices) {
+    // compute face normal
+    let faceNormals = [];
+    for (let i = 0; i < indices.length; i += 1) {
+        const v1 = vertices[indices[i][0]];
+        const v2 = vertices[indices[i][1]];
+        const v3 = vertices[indices[i][2]];
 
-    // TODO: IMPLEMENT - actually compute normals
+        const edge1 = [v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2]]
+        const edge2 = [v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2]]
 
-    return normals
+        faceNormals.push(normalize(crossProduct(edge1, edge2)));
+    }
+
+    // compute vertex normal
+    const normals = new Array(vertices.length).fill([0, 0, 0]); // [x, y, z]
+
+    // Accumulate face normals to vertex normals
+    for (let i = 0; i < indices.length; i += 1) {
+        const vertexIndex1 = indices[i][0];
+        const vertexIndex2 = indices[i][1];
+        const vertexIndex3 = indices[i][2];
+        
+        const faceNormal = faceNormals[i];
+
+        normals[vertexIndex1][0] += faceNormal[0];
+        normals[vertexIndex1][1] += faceNormal[1];
+        normals[vertexIndex1][2] += faceNormal[2];
+
+        normals[vertexIndex2][0] += faceNormal[0];
+        normals[vertexIndex2][1] += faceNormal[1];
+        normals[vertexIndex2][2] += faceNormal[2];
+
+        normals[vertexIndex3][0] += faceNormal[0];
+        normals[vertexIndex3][1] += faceNormal[1];
+        normals[vertexIndex3][2] += faceNormal[2];
+    }
+  
+    // Normalize vertex normals
+    for (let i = 0; i < normals.length; i++) { normals[i] = normalize(normals[i]); }
+
+    // return vertex normal
+    return normals;
+}
+
+//------------------------------------------------------------------
+//
+// Helper function to do cross product
+//
+//------------------------------------------------------------------
+function crossProduct(v1, v2) {
+    return [
+        v1[1] * v2[2] - v1[2] * v2[1],
+        v1[2] * v2[0] - v1[0] * v2[2],
+        v1[0] * v2[1] - v1[1] * v2[0]
+      ];
+}
+
+//------------------------------------------------------------------
+//
+// Helper function to do normalize vector
+//
+//------------------------------------------------------------------
+function normalize(v) {
+    const length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    
+    v[0] /= length;
+    v[1] /= length;
+    v[2] /= length;
+
+    return v;
 }
 
 //------------------------------------------------------------------

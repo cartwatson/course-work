@@ -25,7 +25,7 @@ MySample.main = (function() {
     // buffers
     let indexBuffer = gl.createBuffer();
     let vertexBuffer = gl.createBuffer();
-    // let vertexNormalBuffer = gl.createBuffer();
+    let vertexNormalBuffer = gl.createBuffer();
     
     loadFileFromServer(bunnyFilePath)
     .then(data => {
@@ -42,22 +42,26 @@ MySample.main = (function() {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, bunny.indices, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
         // normals buffer
-        // gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
-        // gl.bufferData(gl.ARRAY_BUFFER, bunny.normals, gl.STATIC_DRAW);
-        // gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, bunny.normals, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
         // Step 5 : Prepare Shaders
+        // vertex shader
         return loadFileFromServer(vertexShaderFilePath);
     }).then(source => {
         vertexShader = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vertexShader, source);
         gl.compileShader(vertexShader);
 
+        // fragment shader
         return loadFileFromServer(fragmentShaderFilePath)
     }).then(source => {
         fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
         gl.shaderSource(fragmentShader, source);
         gl.compileShader(fragmentShader);
+
+        // shader program
     }).then(() => {
         shaderProgram = gl.createProgram()
         gl.attachShader(shaderProgram, vertexShader);
@@ -71,10 +75,10 @@ MySample.main = (function() {
         gl.enableVertexAttribArray(position);
         gl.vertexAttribPointer(position, 3, gl.FLOAT, false, bunny.vertices.BYTES_PER_ELEMENT * 3, 0);
 
-        // gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-        // let color = gl.getAttribLocation(shaderProgram, 'aColor');
-        // gl.enableVertexAttribArray(color);
-        // gl.vertexAttribPointer(color, 3, gl.FLOAT, false, vertexColors.BYTES_PER_ELEMENT * 3, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+        let normal = gl.getAttribLocation(shaderProgram, 'aColor');
+        gl.enableVertexAttribArray(normal);
+        gl.vertexAttribPointer(normal, 3, gl.FLOAT, false, bunny.normals.BYTES_PER_ELEMENT * 3, 0);
 
         // Step 7 : Request Animation Frame
         requestAnimationFrame(animationLoop);
@@ -133,7 +137,7 @@ MySample.main = (function() {
 
         // Step 9 : Render the models
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.drawElements(gl.TRIANGLES, bunny.indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, bunny.indices.length, gl.UNSIGNED_INT, 0);
     }
 
     //------------------------------------------------------------------
