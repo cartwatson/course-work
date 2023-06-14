@@ -1,4 +1,3 @@
-
 MySample.main = (function() {
     'use strict';
 
@@ -6,118 +5,56 @@ MySample.main = (function() {
     let canvas = document.getElementById('canvas-main');
     // Step 2 : Obtain the WebGL Context
     let gl = canvas.getContext('webgl2');
-    // Step 3 : Prepare Raw Data
-    // create buffer objects
-    // tetrahedron 0-3
-    // cube        4-11
-    // octahedron  12-17
-    let vertices = new Float32Array([
-        // tetrahedron
-        0.0, 0.25, -0.125,
-        0.25, 0.0, -0.125,
-        -0.25, 0.0, -0.125,
-        0.0, 0.15, 0.125,
-        // cube
-        0.75, 0.75, -0.25,
-        0.75, 0.25, -0.25,
-        0.25, 0.25, -0.25,
-        0.25, 0.75, -0.25,
-        0.75, 0.75,  0.25,
-        0.75, 0.25,  0.25,
-        0.25, 0.25,  0.25,
-        0.25, 0.75,  0.25,
-       // octahedron
-       -0.25, -0.5, -0.25, // back right
-       -0.75, -0.5, -0.25, // back left
-       -0.25, -0.5,  0.25, // front right
-       -0.75, -0.5,  0.25, // front left
-       -0.5,  -0.25, 0.0, // top
-       -0.5, -0.75, 0.0,  // bottom
-    ]);
-    let vertexColors = new Float32Array([
-        // tetrahedron
-        0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0,
-        0.0, 1.0, 0.0,
-        0.0, 0.0, 1.0,
-        // cube
-        0.0, 0.0, 0.0, // black
-        1.0, 0.0, 0.0, // red
-        0.0, 1.0, 0.0, // blue
-        0.0, 0.0, 1.0, // green
-        1.0, 1.0, 1.0, // white
-        1.0, 1.0, 0.0, // purple
-        0.0, 1.0, 1.0, // cyan
-        1.0, 0.0, 1.0, // fuschia
-        // octahedron
-        1.0, 0.0, 0.0, // red
-        0.0, 1.0, 0.0, // blue
-        0.0, 0.0, 1.0, // green
-        1.0, 1.0, 0.0, // purple
-        0.0, 1.0, 1.0, // cyan
-        1.0, 0.0, 1.0, // fuschia
-    ]);
-    let indices = new Uint16Array([
-        // tetrahedron
-        0, 1, 2,
-        0, 2, 3,
-        0, 3, 1,
-        1, 3, 2,
-        // cube
-        4,  6,  5,
-        4,  7,  6,
-        4,  8,  5,
-        8,  5,  9,
-        8,  9,  11,
-        11, 9,  10,
-        7,  10, 6,
-        11, 10, 7,
-        7,  4,  8,
-        7,  8,  11,
-        10, 5,  6,
-        10, 9,  5,
-        // octahedron
-        12, 16, 14,
-        14, 16, 15,
-        15, 16, 13,
-        13, 16, 12,
-        14, 17, 12,
-        12, 17, 13,
-        13, 17, 15,
-        15, 17, 14,
-    ]);
 
-    // Step 4 : Prepare Buffer Objects
-    // vertex buffer
-    let vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    // color buffer
-    let vertexColorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertexColors, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    // index buffer
-    let indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-    
-    // Step 5 : Prepare Shaders
+    // file paths
+    const bunnyFilePath = '../models/bun_zipper.ply'
+    const dragonFilePath = '../models/dragon_vrip.ply'
+    // const armadilloFilePath = '../models/armadillo.ply'
+    const vertexShaderFilePath = '../shaders/simple.vert'
+    const fragmentShaderFilePath = '../shaders/simple.frag'
+
+    // shaders
     let vertexShader = null;
     let fragmentShader = null;
     let shaderProgram = null;
+    
+    // models
+    let dragon = null;
+    let bunny = null;
+    
+    // buffers
+    let indexBuffer = gl.createBuffer();
+    let vertexBuffer = gl.createBuffer();
+    // let vertexNormalBuffer = gl.createBuffer();
+    
+    loadFileFromServer(bunnyFilePath)
+    .then(data => {
+        // Step 3 : Prepare Raw Data
+        bunny = parsePly(data);
 
-    loadFileFromServer('../shaders/simple.vert')
-    .then(source => {
-        // console.log(source)//DEBUG
+        // Step 4 : Prepare Buffer Objects
+        // vertex buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, bunny.vertices, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        // index buffer
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, bunny.indices, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
+        // normals buffer
+        // gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+        // gl.bufferData(gl.ARRAY_BUFFER, bunny.normals, gl.STATIC_DRAW);
+        // gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+        // Step 5 : Prepare Shaders
+        return loadFileFromServer(vertexShaderFilePath);
+    }).then(source => {
         vertexShader = gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vertexShader, source);
         gl.compileShader(vertexShader);
-        return loadFileFromServer('../shaders/simple.frag')
+
+        return loadFileFromServer(fragmentShaderFilePath)
     }).then(source => {
-        // console.log(source)//DEBUG
         fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
         gl.shaderSource(fragmentShader, source);
         gl.compileShader(fragmentShader);
@@ -132,12 +69,12 @@ MySample.main = (function() {
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         let position = gl.getAttribLocation(shaderProgram, 'aPosition');
         gl.enableVertexAttribArray(position);
-        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, vertices.BYTES_PER_ELEMENT * 3, 0);
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, bunny.vertices.BYTES_PER_ELEMENT * 3, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
-        let color = gl.getAttribLocation(shaderProgram, 'aColor');
-        gl.enableVertexAttribArray(color);
-        gl.vertexAttribPointer(color, 3, gl.FLOAT, false, vertexColors.BYTES_PER_ELEMENT * 3, 0);
+        // gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
+        // let color = gl.getAttribLocation(shaderProgram, 'aColor');
+        // gl.enableVertexAttribArray(color);
+        // gl.vertexAttribPointer(color, 3, gl.FLOAT, false, vertexColors.BYTES_PER_ELEMENT * 3, 0);
 
         // Step 7 : Request Animation Frame
         requestAnimationFrame(animationLoop);
@@ -146,43 +83,39 @@ MySample.main = (function() {
     //------------------------------------------------------------------
     //
     // Scene updates go here.
+    // Variables used:
+    let theta = 0;
     //
     //------------------------------------------------------------------
-    let scale = 0.5;
-    let t = 0;
-    let theta = 0;
-
     function update() {
-        theta += 0.01;
-        t += 0.0005;
-        if (t > 1) { t = 0; }
+        // theta += 0.01;
 
-        let uTS = [
-            scale, 0, 0, 0,
-            0, scale, 0, 0,
-            0, 0, scale, 0,
-            t, t, t, 1,
-        ];
+        // let uR_Y = [
+        //     Math.cos(theta), 0, Math.sin(theta), 0,
+        //     0, 1, 0, 0,
+        //     -Math.sin(theta), 0, Math.cos(theta), 0,
+        //     0, 0, 0, 1,
+        // ];
 
-        let uR_Y = [
-            Math.cos(theta), 0, Math.sin(theta), 0,
-            0, 1, 0, 0,
-            -Math.sin(theta), 0, Math.cos(theta), 0,
-            0, 0, 0, 1,
-        ];
+        // let uR_X = [
+        //     1, 0, 0, 0,
+        //     0, Math.cos(theta), -Math.sin(theta), 0,
+        //     0, Math.sin(theta), Math.cos(theta), 0,
+        //     0, 0, 0, 1,
+        // ];
 
-        let uR_X = [
-            1, 0, 0, 0,
-            0, Math.cos(theta), -Math.sin(theta), 0,
-            0, Math.sin(theta), Math.cos(theta), 0,
-            0, 0, 0, 1,
-        ];
+        // let uR_Z = [
+        //     Math.cos(theta), -Math.sin(theta), 0, 0,
+        //     Math.sin(theta), Math.cos(theta), 0, 0,
+        //     0, 0, 1, 0,
+        //     0, 0, 0, 1,
+        // ];
 
-        let uRotation = multiplyMatrix4x4(uR_Y, uR_X);
+        // let uRotation = multiplyMatrix4x4(multiplyMatrix4x4(uR_Y, uR_X), uR_Z);
+        let uRotation = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ]; // IDENTITY MATRIX, just for testing
 
         let location = gl.getUniformLocation(shaderProgram, 'uThing');
-        let uTSR = multiplyMatrix4x4(uTS, uRotation);
-        gl.uniformMatrix4fv(location, false, uTSR);
+        gl.uniformMatrix4fv(location, false, uRotation);
     }
 
     //------------------------------------------------------------------
@@ -198,9 +131,9 @@ MySample.main = (function() {
         gl.enable(gl.DEPTH_TEST);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        // Step 9 : Draw the Primitives
+        // Step 9 : Render the models
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, bunny.indices.length, gl.UNSIGNED_SHORT, 0);
     }
 
     //------------------------------------------------------------------
@@ -215,4 +148,5 @@ MySample.main = (function() {
 
         requestAnimationFrame(animationLoop);
     }
+
 }());

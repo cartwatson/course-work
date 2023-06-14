@@ -1,5 +1,3 @@
-
-
 //------------------------------------------------------------------
 //
 // Helper function used to load a file from the server
@@ -8,6 +6,69 @@
 function loadFileFromServer(filename) {
     return fetch(filename)
         .then(res => res.text());
+}
+
+//------------------------------------------------------------------
+//
+// Helper function to parse .ply files with the format ascii
+//
+//------------------------------------------------------------------
+function parsePly(lines) {
+    let dataIndex = 0;
+    
+    let vertexCount = null;
+    let faceCount = null;
+    // get face and vertex count
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith('element vertex')) {
+            vertexCount = parseInt(lines[i].split(' ')[2]);
+        } else if (lines[i].startsWith('element face')) {
+            faceCount = parseInt(lines[i].split(' ')[2]);
+        } else if (lines[i].startsWith('end_header')) {
+            dataIndex = i + 1;
+            break;
+        }
+    }
+    
+    let v =[];
+    // get vertices
+    for (let i = dataIndex; i < dataIndex + vertexCount; i++) {
+        const vertexData = lines[i].split(' ');
+        v.push({
+            x: parseFloat(vertexData[0]),
+            y: parseFloat(vertexData[1]),
+            z: parseFloat(vertexData[2])
+        });
+    }
+    let vertices = new Float32Array(v);
+    
+    let I = [];
+    // get indices
+    for (let i = dataIndex + vertexCount; i < dataIndex + vertexCount + faceCount; i++) {
+        const faceData = lines[i].split(' ');
+        const faceIndices = faceData.slice(1).map(index => parseInt(index));
+        faceIndices.pop();
+        I.push(faceIndices);
+    }
+    let indices = new Uint32Array(I);
+
+    // compute normals
+    let normals = computeNormals(vertices, indices);
+
+    return {vertices, indices, normals}
+}
+
+//------------------------------------------------------------------
+//
+// Helper function to compute normals
+//
+//------------------------------------------------------------------
+function computeNormals(verticies, indices) {
+    let normals = new Float32Array([]);
+
+    // TODO: IMPLEMENT - actually compute normals
+
+    return normals
 }
 
 //------------------------------------------------------------------
