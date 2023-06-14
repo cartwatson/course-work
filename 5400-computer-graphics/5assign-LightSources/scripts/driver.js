@@ -13,6 +13,9 @@ MySample.main = (function() {
     const vertexShaderFilePath = '../shaders/simple.vert'
     const fragmentShaderFilePath = '../shaders/simple.frag'
 
+    // testings
+    let colors = new Float32Array([1.0, 0.0, 0.0]);
+
     // shaders
     let vertexShader = null;
     let fragmentShader = null;
@@ -25,7 +28,7 @@ MySample.main = (function() {
     // buffers
     let indexBuffer = gl.createBuffer();
     let vertexBuffer = gl.createBuffer();
-    let vertexNormalBuffer = gl.createBuffer();
+    let normalBuffer = gl.createBuffer();
     
     loadFileFromServer(bunnyFilePath)
     .then(data => {
@@ -42,7 +45,7 @@ MySample.main = (function() {
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, bunny.indices, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
         // normals buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, bunny.normals, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
@@ -68,19 +71,9 @@ MySample.main = (function() {
         gl.attachShader(shaderProgram, fragmentShader);
         gl.linkProgram(shaderProgram);
         gl.useProgram(shaderProgram);
-
-        // STEP 6 : Specify Shader & Buffer Object Attributes
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        let position = gl.getAttribLocation(shaderProgram, 'aPosition');
-        gl.enableVertexAttribArray(position);
-        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, bunny.vertices.BYTES_PER_ELEMENT * 3, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
-        let normal = gl.getAttribLocation(shaderProgram, 'aColor');
-        gl.enableVertexAttribArray(normal);
-        gl.vertexAttribPointer(normal, 3, gl.FLOAT, false, bunny.normals.BYTES_PER_ELEMENT * 3, 0);
-
+        
         // Step 7 : Request Animation Frame
+    }).then(() => {
         requestAnimationFrame(animationLoop);
     });
 
@@ -89,17 +82,27 @@ MySample.main = (function() {
     // Scene updates go here.
     // Variables used:
     let theta = 0;
+    let t = 0; // to function as a time variable, changes model and lighting
+    let model = bunny;
     //
     //------------------------------------------------------------------
     function update() {
-        // theta += 0.01;
+        // change model
 
-        // let uR_Y = [
-        //     Math.cos(theta), 0, Math.sin(theta), 0,
-        //     0, 1, 0, 0,
-        //     -Math.sin(theta), 0, Math.cos(theta), 0,
-        //     0, 0, 0, 1,
-        // ];
+        // change lights
+
+        t += 1;
+        if (t > 500) { t = 0; }
+
+
+        theta += 0.01;
+
+        let uR_Y = [
+            Math.cos(theta), 0, Math.sin(theta), 0,
+            0, 1, 0, 0,
+            -Math.sin(theta), 0, Math.cos(theta), 0,
+            0, 0, 0, 1,
+        ];
 
         // let uR_X = [
         //     1, 0, 0, 0,
@@ -115,8 +118,8 @@ MySample.main = (function() {
         //     0, 0, 0, 1,
         // ];
 
-        // let uRotation = multiplyMatrix4x4(multiplyMatrix4x4(uR_Y, uR_X), uR_Z);
-        let uRotation = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ]; // IDENTITY MATRIX, just for testing
+        let uRotation = uR_Y;//multiplyMatrix4x4(multiplyMatrix4x4(uR_Y, uR_X), uR_Z);
+        // let uRotation = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; // IDENTITY MATRIX, just for testing
 
         let location = gl.getUniformLocation(shaderProgram, 'uThing');
         gl.uniformMatrix4fv(location, false, uRotation);
@@ -128,6 +131,17 @@ MySample.main = (function() {
     //
     //------------------------------------------------------------------
     function render() {
+        // STEP 6 : Specify Shader & Buffer Object Attributes
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        let position = gl.getAttribLocation(shaderProgram, 'aPosition');
+        gl.enableVertexAttribArray(position);
+        gl.vertexAttribPointer(position, 3, gl.FLOAT, false, bunny.vertices.BYTES_PER_ELEMENT * 3, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+        let normal = gl.getAttribLocation(shaderProgram, 'aNormal');
+        gl.enableVertexAttribArray(normal);
+        gl.vertexAttribPointer(normal, 3, gl.FLOAT, false, bunny.normals.BYTES_PER_ELEMENT * 3, 0);
+
         // Step 8 : Reset Framebuffer & Depth Buffer
         gl.clearColor(0.392156862740980392156862745098, 0.58431372549019607843137254901961, 0.92941176470588235294117647058824, 1.0);
         gl.clearDepth(1.0);

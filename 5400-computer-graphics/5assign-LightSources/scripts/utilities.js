@@ -53,11 +53,11 @@ function parsePly(data) {
 
     // compute normals
     let n = computeNormals(v, I);
-    
-    // get in usable form
-    let vertices = new Float32Array(v);
-    let indices = new Uint32Array(I);
-    let normals = new Float32Array(n);
+
+    // get in usable form // flatten arrays
+    let vertices = new Float32Array(flattenArray(v));
+    let indices = new Uint32Array(flattenArray(I));
+    let normals = new Float32Array(flattenArray(n));
     
     return {vertices, indices, normals}
 }
@@ -82,34 +82,51 @@ function computeNormals(vertices, indices) {
     }
 
     // compute vertex normal
-    const normals = new Array(vertices.length).fill([0, 0, 0]); // [x, y, z]
+    // init final and helper array, fill with zeros
+    const vertexNormals = new Array(vertices.length);
+    for (let i = 0; i < vertexNormals.length; i++) { vertexNormals[i] = [0, 0, 0]; } // using .fill([0,0,0]) results in each index having the same ref
+    const vertexCount = new Array(vertices.length).fill(0);
 
     // Accumulate face normals to vertex normals
-    for (let i = 0; i < indices.length; i += 1) {
+    for (let i = 0; i < indices.length; i++) {
         const vertexIndex1 = indices[i][0];
         const vertexIndex2 = indices[i][1];
         const vertexIndex3 = indices[i][2];
         
         const faceNormal = faceNormals[i];
 
-        normals[vertexIndex1][0] += faceNormal[0];
-        normals[vertexIndex1][1] += faceNormal[1];
-        normals[vertexIndex1][2] += faceNormal[2];
+        // increment count to use for averaging later
+        vertexCount[vertexIndex1] += 1;
+        vertexCount[vertexIndex2] += 1;
+        vertexCount[vertexIndex3] += 1;
 
-        normals[vertexIndex2][0] += faceNormal[0];
-        normals[vertexIndex2][1] += faceNormal[1];
-        normals[vertexIndex2][2] += faceNormal[2];
+        // increment value of normal to be averaged and normalized later
+        vertexNormals[vertexIndex1][0] += faceNormal[0];
+        vertexNormals[vertexIndex1][1] += faceNormal[1];
+        vertexNormals[vertexIndex1][2] += faceNormal[2];
 
-        normals[vertexIndex3][0] += faceNormal[0];
-        normals[vertexIndex3][1] += faceNormal[1];
-        normals[vertexIndex3][2] += faceNormal[2];
+        vertexNormals[vertexIndex2][0] += faceNormal[0];
+        vertexNormals[vertexIndex2][1] += faceNormal[1];
+        vertexNormals[vertexIndex2][2] += faceNormal[2];
+        
+        vertexNormals[vertexIndex3][0] += faceNormal[0];
+        vertexNormals[vertexIndex3][1] += faceNormal[1];
+        vertexNormals[vertexIndex3][2] += faceNormal[2];
+    }
+    
+    // average vertex normals
+    for (let i = 0; i < vertexCount.length; i++) {
+        if (vertexCount[i] === 0) { continue; }
+        vertexNormals[i][0] = vertexNormals[i][0] / vertexCount[i];
+        vertexNormals[i][1] = vertexNormals[i][1] / vertexCount[i];
+        vertexNormals[i][2] = vertexNormals[i][2] / vertexCount[i];
     }
   
     // Normalize vertex normals
-    for (let i = 0; i < normals.length; i++) { normals[i] = normalize(normals[i]); }
+    for (let i = 0; i < vertexNormals.length; i++) { vertexNormals[i] = normalize(vertexNormals[i]); }
 
     // return vertex normal
-    return normals;
+    return vertexNormals;
 }
 
 //------------------------------------------------------------------
@@ -138,6 +155,23 @@ function normalize(v) {
     v[2] /= length;
 
     return v;
+}
+
+//------------------------------------------------------------------
+//
+// Helper function to make a 2D array 1D
+//
+//------------------------------------------------------------------
+function flattenArray(array2D) {
+    let flattened = [];
+
+    for (let i = 0; i < array2D.length; i++) {
+        for (let j = 0; j < array2D[i].length; j++) {
+            flattened.push(array2D[i][j]);
+        }
+    }
+
+    return flattened;
 }
 
 //------------------------------------------------------------------
