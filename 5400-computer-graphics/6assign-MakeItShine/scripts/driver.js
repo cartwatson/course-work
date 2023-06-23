@@ -72,16 +72,25 @@ MySample.main = (function() {
     // Variables used:
     // iteration control
     let theta = 0;
-    let time = 0; // to function as a time variable, changes model and lighting
+    let time = 0; // changes model and lighting
+    //
     // uTRS
     let scale = 4;
     let transform = {dx: 0, dy: -0.3, dz: 0}
+    //
     // model currently being rendered
-    let model = null; // holds info for current model displayed
-    // lights
-    let light1 = [1, 0, 0]; // default values: [1, 0, 0];
-    let light2 = [0, 0, 0]; // default values: [0, 1, 0];
-    let light3 = [0, 0, 0]; // default values: [0, 0, 1];
+    let model = null;
+    //
+    // // lights
+    // let light1 = [1, 0, 0]; // default values: [1, 0, 0];
+    // let light2 = [0, 0, 0]; // default values: [0, 1, 0];
+    // let light3 = [0, 0, 0]; // default values: [0, 0, 1];
+    //
+    // Update lights and specular parameters
+    let lightDirection = [0.5, 0.5, 1.0];       // Example light direction
+    let lightColor = [1.0, 0.0, 0.0];           // Example light color
+    let specularColor = [1.0, 0.0, 0.0];        // Example specular color
+    let shininess = 4.0;                       // Example shininess factor
     //
     //------------------------------------------------------------------
     function update() {
@@ -89,29 +98,25 @@ MySample.main = (function() {
         if (time < 25) {
             // all of these values are set with an init or reset
         } else if (time < 50) {
-            // just the second light
-            light1 = [0, 0, 0];
-            light2 = [0, 1, 0];
-            light3 = [0, 0, 0];
+            // green
+            specularColor = [0.0, 1.0, 0.0];
+            lightColor = [0.0, 1.0, 0.0];
         } else if (time < 75) {
-            // just the third light
-            light1 = [0, 0, 0];
-            light2 = [0, 0, 0];
-            light3 = [0, 0, 1];
+            // blue
+            specularColor = [0.0, 0.0, 1.0];
+            lightColor = [0.0, 0.0, 1.0];
         } else if (time < 100) {
-            // all lights should be on
-            light1 = [1, 0, 0];
-            light2 = [0, 1, 0];
-            light3 = [0, 0, 1];
+            // white
+            specularColor = [1.0, 1.0, 1.0];
+            lightColor = [1.0, 1.0, 1.0];
         } else { // reset
             time = 0;
             // switch model
             if (model.vertices.length == 107841) { changeModel(dragon); }
             else { changeModel(bunny) }
-            // just the first light
-            light1 = [1, 0, 0];
-            light2 = [0, 0, 0];
-            light3 = [0, 0, 0];
+            // red
+            specularColor = [0.0, 0.0, 1.0];
+            lightColor = [0.0, 0.0, 1.0];
         }
 
         // increment loop values
@@ -170,13 +175,22 @@ MySample.main = (function() {
         ];
 
         // ---update values in shader-----------------------------------
-        // update lights
-        let shaderLight1 = gl.getUniformLocation(shaderProgram, 'L1_d');
-        let shaderLight2 = gl.getUniformLocation(shaderProgram, 'L2_d');
-        let shaderLight3 = gl.getUniformLocation(shaderProgram, 'L3_d');
-        gl.uniform3fv(shaderLight1, light1);
-        gl.uniform3fv(shaderLight2, light2);
-        gl.uniform3fv(shaderLight3, light3);
+        let shaderLightDirection = gl.getUniformLocation(shaderProgram, 'lightDirection');
+        let shaderLightColor = gl.getUniformLocation(shaderProgram, 'lightColor');
+        let shaderSpecularColor = gl.getUniformLocation(shaderProgram, 'specularColor');
+        let shaderShininess = gl.getUniformLocation(shaderProgram, 'shininess');
+        gl.uniform3fv(shaderLightDirection, lightDirection);
+        gl.uniform3fv(shaderLightColor, lightColor);
+        gl.uniform3fv(shaderSpecularColor, specularColor);
+        gl.uniform1f(shaderShininess, shininess);
+
+        // // update lights
+        // let shaderLight1 = gl.getUniformLocation(shaderProgram, 'L1_d');
+        // let shaderLight2 = gl.getUniformLocation(shaderProgram, 'L2_d');
+        // let shaderLight3 = gl.getUniformLocation(shaderProgram, 'L3_d');
+        // gl.uniform3fv(shaderLight1, light1);
+        // gl.uniform3fv(shaderLight2, light2);
+        // gl.uniform3fv(shaderLight3, light3);
 
         // update location
         let location = gl.getUniformLocation(shaderProgram, 'uThing');
@@ -231,8 +245,7 @@ MySample.main = (function() {
 
     //------------------------------------------------------------------
     //
-    // Helper function to set model and ...
-    //     ... redo vertex, index, and normal buffer
+    // Helper function to set model, vertex, index, and normal buffers
     //
     //------------------------------------------------------------------
     function changeModel(newModel) {
