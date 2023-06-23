@@ -81,11 +81,6 @@ MySample.main = (function() {
     // model currently being rendered
     let model = null;
     //
-    // // lights
-    // let light1 = [1, 0, 0]; // default values: [1, 0, 0];
-    // let light2 = [0, 0, 0]; // default values: [0, 1, 0];
-    // let light3 = [0, 0, 0]; // default values: [0, 0, 1];
-    //
     // Update lights and specular parameters
     let lightDirection = [0.5, 0.5, 1.0];       // Example light direction
     let lightColor = [1.0, 0.0, 0.0];           // Example light color
@@ -175,6 +170,7 @@ MySample.main = (function() {
         ];
 
         // ---update values in shader-----------------------------------
+        // update lights
         let shaderLightDirection = gl.getUniformLocation(shaderProgram, 'lightDirection');
         let shaderLightColor = gl.getUniformLocation(shaderProgram, 'lightColor');
         let shaderSpecularColor = gl.getUniformLocation(shaderProgram, 'specularColor');
@@ -183,14 +179,6 @@ MySample.main = (function() {
         gl.uniform3fv(shaderLightColor, lightColor);
         gl.uniform3fv(shaderSpecularColor, specularColor);
         gl.uniform1f(shaderShininess, shininess);
-
-        // // update lights
-        // let shaderLight1 = gl.getUniformLocation(shaderProgram, 'L1_d');
-        // let shaderLight2 = gl.getUniformLocation(shaderProgram, 'L2_d');
-        // let shaderLight3 = gl.getUniformLocation(shaderProgram, 'L3_d');
-        // gl.uniform3fv(shaderLight1, light1);
-        // gl.uniform3fv(shaderLight2, light2);
-        // gl.uniform3fv(shaderLight3, light3);
 
         // update location
         let location = gl.getUniformLocation(shaderProgram, 'uThing');
