@@ -55,6 +55,18 @@ def knapsack_approx(n, K):
     
 main()
 
+# PSUSEDOCODE
+"""
+init variables to track a running total and what values have been added to get said total
+iterate over list n
+    if number in n is greater than or equal to K/2 and smaller than or equal to K
+        Return it, as it is a valid solution
+    if running total + real_number <= K, add to total and keep track of number added in "solution"
+        if total >= K / 2
+            return the "solution" variable (numbers added to be greater than K/2 and smaller than K)
+"""
+
+
 # CORRECTNESS
 """
 The algorithm above is a factor of 2 approximate solution as it searches for individual items with a value between K/2 and K
@@ -62,7 +74,7 @@ If the value added to the running total falls below K then it is added to the so
 If the solution is greater than or equal to K/2 after added the value then the solution is returned and the program terminates
 
 Testing for this correctness was done by randomly generating lists of various lengths and randomly generating K
-When a solution was not found, the chosen n and K values were manually reviewed for a potential missed solution
+When a solution was not found, the chosen n and K values were manually reviewed for a potential missed solution, this was never the case
 """
 
 # TIME ANALYSIS
