@@ -1,0 +1,273 @@
+# Study Guide
+## Unit 1
+Summary - on-prem vs cloud; why use cloud;
+### True/False
+1. Setting up and maintaining an on-premise computing infrastructure requires an organization to estimate peak capacity requirements and then install the necessary hardware to meet or exceed those requirements. - True
+1. SaaS services give IT staff more control over the underlying resources than IaaS. - False
+1. Cloud computing enables you to think (and use) your computing infrastructure as software? - True
+1. A hybrid cloud is a cloud environment that involves more than one kind of compute service, e.g. virtual machines and lambda functions. - False
+1.  Deploying resources on-premises (within the organization), using virtualization and resource management tools, is sometimes called a private cloud. - True
+1.  AWS's VPC and Elastic Load Balancing play the same basic role as routers, network pipelines, and switches in a traditional on-premise data center.  - True
+1. Proper use of cloud services can take the guesswork out of acquiring the right amount of capacity for a distributed application. - True
+### Multi Select
+1.  Which of the following are the advantages of Cloud Computing? - Being to deploy an application globally in minutes | Being able to increase or decrease capacity based on demand | Being about to exchange large capital expenses with variable but predictable expenses | Increased agility
+1. Which of the following are potential benefits of distributed applications? - Increased Availability | Increased Reliability | Incread application throughtput | Increased Scalability
+1. Which of the following is a perspective that should be considered when moving software systems into a cloud environment? - Business | People | Governance | platform | security | operation
+1. When considering an open-source software solution for setting up a private cloud, which of the following would be relevant questions to consider? - Does the solution require getting new computers/networks | How well is the open-source software support | Is there a recurring cost associated | How stable is the dev community
+
+### Multi Choice
+1. What does the acronym PaaS stand for? - Platform as a Service
+1. Which of the following is an acronym for an AWS storage service? - S3
+1. Which of the following best describes what leads to economies of scale for cloud computing? - having hundreds of thousands of customers aggregated in the cloud
+1. Which of the following services are conceptually equivalent to AWS's Lambda? - Google's App Engine | Azure Function
+
+## Unit 2
+Summary - Pricing comparision to on-prem; pricing in general for AWS;
+### True/False
+1. In general, as a cloud customer uses more of a certain type of resource, the rate for that resource will stay the same or decrease - True
+1. Amazon is willing to negotiate custom prices for high-volume AWS customers. - True
+1. TCO is a financial estimate that considers both direct and indirect costs - True
+1. Both hard and soft benefits need to be considered in an ROI analysis of private and public cloud data centers - True
+1. On-premises data centers can end up costing organization more than public cloud services becasue they have to be designed to meet the needs of "peak" usage - True
+1. Setting up and maintaining an on-premise data center requires capital expendiatures and long-term planning to justifying those expenditures. - True
+1. Using public cloud services can help organization be agile with respect to their computing, storage, and netowrk resources -- only using what they need at the time and only paying for what they use - True
+1. Comparing TCO for a private cloud with the cost of using a public cloud is relatively straight forward because they both consist of computaional, networking, and storage resources. - False
+1. There is just one general purpose type of EC2 instance but it comes in many different sizes - True
+1. AWS offers a free usage tier for all its services but only to students - False
+
+### Multi Choice
+1. In the context of costs associated with setting and operating computing resources on either a public or private cloud, which of the following statements are true? - Recurring cost may include ongoing hardware upgrades or purchases for a private cloud
+1. In the AWS Console, where can a customer set up alerts that will automatically cause an email to be sent if projected usage for a particular kind of resource exceeds a specific amount? - Cost and Usage Reports
+1. Which of the following AWS services is typically NOT free (not counting services that the listed services may create or use)? - Data transfers across regions
+1. What AWS tool allows you to estimate the monthly costs of service before you have started to use that service? - AWS Pricing Calculator
+1. Which of the following is not a fundamental driver of costs associated with AWS Services? - Inbound data transfer
+1. Which of the following is a service that allows customers to consolidate multiple AWS so they can be managed centrally? - AWS Organizations
+
+## Unit 3
+Summary - Names/categories of services; availability_zones/regions/datacenters/points_of_presence;
+### Notes
+* Reliability != Availability
+* Data centers --multi to one relationship--> availability zone
+* Regions and availability zones exist in all major cloud providers
+* DynamoDB, Redshift, Aurora, RDS are all database services
+* EBS, S3, Glacier all are storage services
+* EC2, ECS, Lambda, Fargate all are compute services
+
+### True/False
+1. Reliability is the probability that the system performs correctly during a specific time duration - True
+1. Reliability and availability are synonyms for a metric that measures how trustworthy a system is over time. - False
+1. The reliability of a system will be high at its initial state of operation and gradually reduce to its lowest magnitude over time. - True
+1. In both Microsoft’s Azure and Amazon’s AWS, each availability zone is housed in one data center. - True
+1. In AWS, availability zones are interconnected with high latency and low throughput fiber-optic networks. - True
+1. The concept of a “region” is part of the infrastructure for AWS and Azure but not Google Cloud. - True
+1. The concept of zones or availability zones is part of the infrastructure for AWS, Azure, and Google Cloud. - True
+1. Replicating data and functionality across zones can help distributed applications achieve some degree of resiliency to data center failures. - True
+1. A typical AWS data center contains 3,000 – 4,000 physical servers. - False
+1. An AWS point of presence can be either an edge location or regional edge caches and can help optimize the delivery of content to end users. - True
+1. Of the three major cloud service providers, only Google Cloud offers a content delivery network (CDN). - False
+1. AWS and the Azure have significantly different approaches to their pricing models for computational services - True
+1. Points of Presence continuously measure internet connectivity, performance, and computing so they can optimize the routing of requests from end users. - True
+
+### Multi Choice
+1. The following are things that need to be considered when selecting a region or set of AWS regions to use - Legal requirements for data governance | proximity to customers | services available in region | cost of services
+1. Which of the following is not a key feature of either Azure’s, Google Cloud’s, or AWS’s global infrastructure? - Feet-on-ground technicians who can manually reboot machines
+1. Which of the following is not an AWS compute service? - EFS (Elastic File System)
+1. Which of the following is not an AWS storage service? - ECR (Elastic Container Registry)
+1. Which of the following is not an AWS database service? - CloudTrail 
+
+## Unit 4
+Summary - responsibility of security; IAM;
+### Notes
+* AWS Trusted Advisor is just an online tool; it helps with make sure users follow best practices
+* AWS Shield protects against DDoS attacks
+* Responsibility for securing
+  * Customer  
+    * VPC in which an EC2 instance runs  
+    * configuring subnets of VPC
+  * AWS
+    * Network isolation between customers
+    * Ensuring low latency connectio between server and S3 bucket
+
+### True/False
+1. With AWS shared responsibility model, the customer is responsible for securing the operating system of an EC2 instance. - True
+1. AWS is responsible for protecting the user account (i.e., authentication and authorization data) for an RDS database. - False
+1. AWS is responsible for protecting an EC2 with an appropriate firewall. - False
+1. AWS is responsible for ensuring that data at rest and in transit are encrypted. - False
+1. AWS customers need to be aware of the country in which they store their data and any regulations that pertain to the type of data being stored. - True
+1. For AWS Lambda, AWS is responsible for securing its underlying infrastructure and the AWS customer is responsible for making patches to the OS and platform. - False
+2. Every IAM user can access the AWS management Console - True
+3. By default an IAM user ahas permission to access all resources or data in the AWS account - False
+4. IAM policies are used to deny or grant permissions to users, groups, or roles - True
+5. The prinicple of least privilege says that you should grant a user, group, or role only the privilieges necessary for them to do their job - True
+6. Resource-based policies control what actions a specified principal can perform on a resource, and under what conditions. - True
+7. When IAM tries to determine whether to allow a particular type of access, it first checks for an explicit allow policy and then an explicit denial policy.  If neither of those exists, it uses a default policy. - False
+
+### Multi Choice
+1. Which of the following statements best characterizes AWS Trusted Advisor? - An online tool that can analyze your AWS environment and provides guidance and recommendations to help you provision your resources by following AWS best practices.
+1. Which of the following statements best characterizes AWS Shield? - An always on service that protects against DDoS attacks
+1. Who is responsible for configuring the VPC in which an EC2 instance runs? - The customer
+1. Who is responsible for ensuring there is a low latency connection between a web server and an S3 bucket in the same region? - AWS
+1. Who is responsible for network isolation between different AWS customers - AWS
+1. Who is responsible for configuring the subnets of a VPC? - The Customer
+2.  Which of the following statements about IAM is not true? - AWS can only have one account in IAM 
+
+## Unit 5
+Summary - NAT; CIDR; VPC;
+### Notes
+* NAT - network address translation; Network address translation is a method of mapping an IP address space into another by modifying network address information in the IP header of packets while they are in transit across a traffic routing device.
+* CIDR - 192.0.2.0/24 the 24 denotes the number of fixed bits, each number is 8 bits, fixed starts from left and works right in this case 192.0.2 is fixed
+  * /16 means that only the first half is fixed
+  * /32 means that the whole address is fixed
+
+### True/False
+1. Network appliances for home use often include a cable modem, WiFi modem, router, and switch. - True
+2. A LAN is a computer network that interconnect computers within a geographic region like a town or city - False
+3. A virtual private network or virtual private cloud is a virtual implementation of an intra-network. - True
+4. A netowkr message only needs to include the destination end point - False
+5. The TCP or UDP layer adds port numbers to network messages. - True
+6. NAT increases the available network address space - True
+7. Assume that a CIDR for a subnet is 178.12.43.0/28, then the flexible portion of the IP address in the subnet consists of the last 28 bits of the address. - False
+8. An elastic network interface is a virtual network interface that you can attach or detach from an instance in a VPC. - True
+9. A VPC peering connection is a networking connection between two VPCs but the traffic between them may end up through the Internet and therefore is not necessarily private. - False
+10. In AWS, a NAT Gateway must run on the same EC2 instance as the internet gateway - False
+11. In AWS, a VPC end point is a virtual end point that does not require an internet gateway, NAT, or VPN, but can allow support connections between AWS services and a process running on EC2 instances. - True
+12. VPC sharing enables customers to share subnets with other AWS accounts from across different AWS Organizations - False
+13. The CIDR blocks of subnets cannot overlap. - True
+14. Public Subnets have direct access to the internt but private subnets do not - True
+
+### Multi Select
+1. Which of the following are a type of network device commonly in use in commercial-grade intra-networks? - Wireless Network Interface | Switch | Modem | Router
+2. Which of the following statements about CIDRs is true? - CIDR stands for Classless Inter-Domain Routing | A CIDR address has a fixed portion that is used to route packets | A CIDR address has a flexible portion that can identify a machine within the range of the fixed portion
+
+### Multi Choice
+1. Which of the following statements about the network and transport layers in the OSI model is true? - The network layer deal with the routing packets between networks; while the transport layer deals with process-to-process communications
+
+## Unit 6
+Summary - access/creation of services; containers;
+### True/False
+1. EC2 is a PaaS type of service, whereas Elastic Beanstalk is an IaaS type of service. - False
+2. AWS only allows you to select attached disks of predefined sizes, like Azure and Google. - False
+3. AWS instances can be protected from accidental termination. - True
+4. An AWS security group can define inbound rules for IPv4, but not IPv6. - True
+5. A Linux instance will typically have at least one security group that contains an inbound rule which allows traffic on port 22 (ssh). - True
+6. EC2 instances can be created and managed via the console and command-line interface, but not programmatically (i.e., through an SDK). - False
+7. The only way to reach your instance from the Internet is to assign it an elastic IP address. - False
+8. On-demand instances are typically more expensive than reserved or spot instances. - True
+9. Dedicated Hosts are a good choice when you have existing per-socket, per-core, or per-VM software licenses, or when you must satisfy specific corporate compliance and regulatory requirements. - True
+10. Once you receive a request spot-instance and it is launched, it cannot be interrupted. - False
+11. Containers are based on shared virtualized operating systems, making them lighter weight than virtual machines. - True
+12. Containers deliver environmental consistency because the application’s code, configurations, and dependencies are packaged into a single object. - True
+13. AWS Lambda only supports code written in three different languages: JavaScript, Java, and C#. - False
+14. Lambda automatically handles the launching and execution of the application code and scales out or in according to configuration settings. - True
+15. Lambda functions can only be invoked from the API Gateway and SNS. - False
+16. With Elastic Beanstalk, you upload your code and it automatically handles the deployment, from capacity provisioning and load balancing to automatic scaling and monitoring application health. - True
+
+### Multi Select
+1. When creating and launching an EC2 instance, which of the following items you can config? - IAM role | security group | software packages that come installed
+2. What are the four pillars of AWS cost optimization? Increase Elasticity | Optimal Pricing model | Right-size | Optimize storage choices
+
+### Matching
+provides resizable virtual machines-----------------------------------------EC2 (elastic compute cloud)  
+used to store and retrieve Docker Images                                    ECR (elastic container registry)  
+a container orchestration service that supports docker----------------------ECS (elastic container storage)  
+a tool for provision a hybrid cloud                                         VMWare Cloud on AWS  
+provides a simple way to run and manage web applications--------------------Elastic Beanstalk  
+Serverless compute solution                                                 Lambda  
+enables you to run managed Kubernetes on AWS--------------------------------EKS (elastic kubernetes service)  
+a service for building an application/website                               Lightsail  
+a way to run containers that reduces the need to manage servers/clusters----Fargate
+A way to run select AWS services in your on-prem data center                Outposts
+
+## Unit 7
+Summary - storage; EBS; S3;
+### Notes
+* Cloud storage is typically more reliable, scalable, and secure than traditional
+* EFS is a shared file system for multiple EC2
+* S3 storage is independent of any server
+* S3 storage classes are indepedent of location
+* Data in an S3 bucket can be accessed through a web browser
+* Inbound data is free
+* EFS is only compatibile with linux based AMIs (Amazon Machine Image)
+* EFS autoscales up to petabyte levels if necessary
+
+### True/False
+1. Cloud storage is typically more scalable and secure than traditional on-premise storage systems, but not more reliable. - False
+2. Amazon EFS is a local file system that can be attached to an EC2 instance. - False
+3. Instance store, or ephemeral storage, is temporary storage that is added to your Amazon EC2 instance. - True
+4. EBS provides persistant mountable storage volumes while S3 is an object-level storage system - True
+5. EBS volumes can be automatically replicated across regions. - True
+6. AWS supports the creation of point-in-time snapshots of EBS volumes and those snapshots can be stored in S3. - True
+7. The data you store in S3 must be associated with one or more specific servers (that you have direct knowledge or control of, e.g., an EC2 instance). - False
+8. Amazon S3 offers a range of object-level storage classes that are designed for different parts of the world.  Each class is restricted to a different set of regions. - False
+9. Amazon S3, S3 Glacier, and S3 Glacier Deep Archive are all designed to provide 11 9s of durability. - True
+10. Buckets in S3 are functionally equivalent to directories in a hierarchical file system - True
+11. An S3 bucket must be associated with a specific AWS region. - True
+12. You can only access the data in a S3 bucket from the AWS console, the AWS CLI, or through an AWS SDK. - False
+13. AWS charges for data transferred into S3, based on the total number of bytes in a month. - False
+14. Amazon EFS is a shared file system that uses the Network File System (NFS) protocol and that supports an EC2 instance running any OS, including Linux, Windows, and MacOS. - False
+15. An EFS file system can automatically scale to petabytes in size without manual intervention to provision more storage space. - True
+16. Copyrighted materials, such as music and movies, cannot be stored on S3. - False
+17. When you store data in the bucket, it is redundantly stored across multiple AWS facilities within the bucket's region. - True
+
+### Multi Select
+1. Which of the following use cases would Amazon S3 Glacier be a solution for? Media asset archiving | reulatory and compliance archiving | magnetic tape replacement
+2. Which of the following are a common use case for S3? Hosting static websites | storing lots of small JSON objects that may change frequently | storing very large immutable files | storing application assets | backup and disaster recovery
+3. Amazon S3 supports the following kinds of server-side data encryption with which of the following? - Amazon S3-managed encryption Keys | Customer provided encryption keys | AWS key management service
+
+## Unit 8
+Summary - Databases;
+### Notes
+* relational good for structured
+* non-relation good for semi-structured and unstructured data
+* all three major cloud providers support a large variety of DBs
+* in AWS a DB instance can be auto replicated to another instance for reliability
+* in AWS backup storage is free as long as the instance is running
+
+### True/False
+1. In general, relational databases are best suited for structured data while non-relational databases are more suited for semi-structured and unstructured data. - True
+2. Non-relational databases will often support “eventually consistency” instead of "absolute consistency" to improve availability and speed. - True
+3. NoSql Databases are database systems that don’t support SQL queries. - False
+4. The database services in Amazon, Azure, and Google all support a variety of databases, such as MySQL, SQL Server, and PostgreSQL. - True
+5. When you select provisioned storage for a DB instance in AWS RDS, there is no charge for backup storage of up to 100 percent of your database’s storage, as long as the instance is running. - True
+6. Although AWS RDS does not directly support the configuration of a database cluster with "read" replicas, it provides an API that allows application programmers to build this feature into their distributed applications. - False
+7. Amazon RDS can be accessed through the AWS RDS console and through an API (from one of the supported SDK’s), but not from the AWS CLI. - False
+8. Amazon Aurora is propriety non-relational database for cloud-based distributed applications - False
+9. With the robust set of features offered by AWS RDS and DynamoDB, there are virtually no practical use cases for running an unmanaged database on an EC2 instance. - False
+
+### Multi Select
+1. Which of the following are non-relational databases? - Key-value stores | azure cosmosDB | google firestore | graph databases | amazon dynamoDB | Triple/quad (RDF) database
+2. In terms of the two general categories of "managed" and "unmanaged" services, Amazon RDS is like which of the following? - S3 Glacier | Redshift | Aurora | S3 Standard | DynamoDB
+3. Since it is not possible to run DB instances in a VPC, AWS provides some extra security features for locking down access to the DB instances. - False
+4. In AWS, a DB instance (i.e., the primary instance or node) can be automatically replicated to a standby instance in a different availability zone and that standby instance can automatically take over as the primary instance if the primary fails. - True
+5. Which of the following should be considered when creating and launching up a DB instance in AWS RDS? - Number of read/write | amount of dat inserted/updated and its origin | total amount of data | required availability of the data | amount of data retrieved from the database and it's destination
+
+### Multi Choice
+1. Which of the following is not use cases or situations where Amazon RDS would be a good choice? - The application performs a massive number of write operations/second, more than 150k
+2. Which of the following best describes Amazon Redshift? - Fully managed data warehouse
+
+## Unit 9
+Summary - 
+### Notes
+* 
+
+### True/False
+1.
+
+### Multi Select
+1.
+
+### Multi Choice
+
+## Unit 10
+Summary - 
+### Notes
+* 
+
+### True/False
+1.
+
+### Multi Select
+1.
+
+### Multi Choice
+1.

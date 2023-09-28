@@ -1,0 +1,10 @@
+Open Systems Interconnection (OSI) model
+
+Layer           #   Function                                                                Protocol/Address
+Application     7   Means for an application to access a computer network                   HTTP(S), FTP, DHCP, LDAP
+Presentation    6   Ensures that the application layer can read the data; Encryption        ASCI, ICA
+Session         5   Enables orderly exchange of data                                        NetBIOS, RPC
+Transport       4   Provides protocols to support host-to-host communication                TCP, UDP
+Network         3   Routing and packet forwarding (routers)                                 IP
+Data link       2   Transfer data in the same LAN network (hubs and switches)               MAC
+Physical        1   Transmission and reception of raw bitstreams over a physical medium     Signals (1s and 0s)
