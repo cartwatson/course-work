@@ -1,0 +1,3 @@
+1. Sempaphore and Busy wait
+2. Wall time is also know of real time, it is the amount of time from the start of the program to the end of execution.
+CPU time is only counted when the CPU is executing instructions.  It doesn't include any time the CPU is waiting or doing anything except executing instuctions. As a result its generally shorter than wall time.
