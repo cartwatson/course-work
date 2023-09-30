@@ -1,2 +1,4 @@
 5050-advanced-algorithms/**/*.pdf
 *.csv
+*.exe
+**/.vscode
