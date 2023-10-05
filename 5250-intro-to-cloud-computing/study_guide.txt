@@ -1,5 +1,5 @@
 # Study Guide
-## Unit 1
+## Unit 1 - Overview of Cloud Concepts
 Summary - on-prem vs cloud; why use cloud;
 ### True/False
 1. Setting up and maintaining an on-premise computing infrastructure requires an organization to estimate peak capacity requirements and then install the necessary hardware to meet or exceed those requirements. - True
@@ -21,7 +21,7 @@ Summary - on-prem vs cloud; why use cloud;
 1. Which of the following best describes what leads to economies of scale for cloud computing? - having hundreds of thousands of customers aggregated in the cloud
 1. Which of the following services are conceptually equivalent to AWS's Lambda? - Google's App Engine | Azure Function
 
-## Unit 2
+## Unit 2 - Cloud Economics
 Summary - Pricing comparision to on-prem; pricing in general for AWS;
 ### True/False
 1. In general, as a cloud customer uses more of a certain type of resource, the rate for that resource will stay the same or decrease - True
@@ -43,7 +43,7 @@ Summary - Pricing comparision to on-prem; pricing in general for AWS;
 1. Which of the following is not a fundamental driver of costs associated with AWS Services? - Inbound data transfer
 1. Which of the following is a service that allows customers to consolidate multiple AWS so they can be managed centrally? - AWS Organizations
 
-## Unit 3
+## Unit 3 - Infrastructure
 Summary - Names/categories of services; availability_zones/regions/datacenters/points_of_presence;
 ### Notes
 * Reliability != Availability
@@ -75,7 +75,7 @@ Summary - Names/categories of services; availability_zones/regions/datacenters/p
 1. Which of the following is not an AWS storage service? - ECR (Elastic Container Registry)
 1. Which of the following is not an AWS database service? - CloudTrail 
 
-## Unit 4
+## Unit 4 - Cloud Security
 Summary - responsibility of security; IAM;
 ### Notes
 * AWS Trusted Advisor is just an online tool; it helps with make sure users follow best practices
@@ -111,7 +111,7 @@ Summary - responsibility of security; IAM;
 1. Who is responsible for configuring the subnets of a VPC? - The Customer
 2.  Which of the following statements about IAM is not true? - AWS can only have one account in IAM 
 
-## Unit 5
+## Unit 5 - Networking and Content Delivery
 Summary - NAT; CIDR; VPC;
 ### Notes
 * NAT - network address translation; Network address translation is a method of mapping an IP address space into another by modifying network address information in the IP header of packets while they are in transit across a traffic routing device.
@@ -142,7 +142,7 @@ Summary - NAT; CIDR; VPC;
 ### Multi Choice
 1. Which of the following statements about the network and transport layers in the OSI model is true? - The network layer deal with the routing packets between networks; while the transport layer deals with process-to-process communications
 
-## Unit 6
+## Unit 6 - Compute Services
 Summary - access/creation of services; containers;
 ### True/False
 1. EC2 is a PaaS type of service, whereas Elastic Beanstalk is an IaaS type of service. - False
@@ -178,7 +178,7 @@ a service for building an application/website                               Ligh
 a way to run containers that reduces the need to manage servers/clusters----Fargate
 A way to run select AWS services in your on-prem data center                Outposts
 
-## Unit 7
+## Unit 7 - Block, Object, and File Storage Services
 Summary - storage; EBS; S3;
 ### Notes
 * Cloud storage is typically more reliable, scalable, and secure than traditional
@@ -214,7 +214,7 @@ Summary - storage; EBS; S3;
 2. Which of the following are a common use case for S3? Hosting static websites | storing lots of small JSON objects that may change frequently | storing very large immutable files | storing application assets | backup and disaster recovery
 3. Amazon S3 supports the following kinds of server-side data encryption with which of the following? - Amazon S3-managed encryption Keys | Customer provided encryption keys | AWS key management service
 
-## Unit 8
+## Unit 8 - Database Services
 Summary - Databases;
 ### Notes
 * relational good for structured
@@ -245,29 +245,51 @@ Summary - Databases;
 1. Which of the following is not use cases or situations where Amazon RDS would be a good choice? - The application performs a massive number of write operations/second, more than 150k
 2. Which of the following best describes Amazon Redshift? - Fully managed data warehouse
 
-## Unit 9
-Summary - 
+## Unit 9 - Cloud Architecture
 ### Notes
-* 
+* AWS Well-Architected and the Six Pillars
+* The AWS Well-Architected Framework describes key concepts, design principles, and architectural best practices for designing and running workloads in the cloud. By answering a few foundational questions, learn how well your architecture aligns with cloud best practices and gain guidance for making improvements.
+  * Operational Excellence Pillar - The operational excellence pillar focuses on running and monitoring systems, and continually improving processes and procedures. Key topics include automating changes, responding to events, and defining standards to manage daily operations.
+  * Security Piller - The security pillar focuses on protecting information and systems. Key topics include confidentiality and integrity of data, managing user permissions, and establishing controls to detect security events.
+  * Reliability Pillar - The reliability pillar focuses on workloads performing their intended functions and how to recover quickly from failure to meet demands. Key topics include distributed system design, recovery planning, and adapting to changing requirements.
+  * Performance Efficiency Pillar - The performance efficiency pillar focuses on structured and streamlined allocation of IT and computing resources. Key topics include selecting resource types and sizes optimized for workload requirements, monitoring performance, and maintaining efficiency as business needs evolve.
+  * Cost Optimization Pillar - The cost optimization pillar focuses on avoiding unnecessary costs. Key topics include understanding spending over time and controlling fund allocation, selecting resources of the right type and quantity, and scaling to meet business needs without overspending.
+  * Sustainability Pillar - The sustainability pillar focuses on minimizing the environmental impacts of running cloud workloads. Key topics include a shared responsibility model for sustainability, understanding impact, and maximizing utilization to minimize required resources and reduce downstream impacts. 
 
 ### True/False
-1.
+1. Each pillar in the AWS Well-Architecture Framework consists of a set of design principles and a set of best practices, organized into areas.  Also, for each area, there is a set of questions that a team can use to test how well their cloud infrastructure is following the best practices. - True
+2. The focus of the Reliability Pillar is to ensure a workload performs its intended function correctly and consistently when it’s expected to. - True
+3. MTBF is measure counting the number of failures over a specific amount of time. - True
+4. Availability is the percentage of time that a system is operating normally or correctly performing the operations expected of it (i.e., the normal operation time over total time). - True
+5. Most commercial software systems require availability of 99.999% or greater. - False
 
 ### Multi Select
-1.
+1. Which of the following are a common responsibility of a cloud architect or someone who have cloud architecting in their job description? - engage with decision makers to identify the business goal and capabilities | ensure alignment between technology deliverables and businesss goal | work with delivery teams to implement solution
 
 ### Multi Choice
+1. Which best characterizes the AWS Well-Architected Framework? - A guide designing infrastrucutres that are secure, high performing, resilient, and efficient
 
-## Unit 10
-Summary - 
-### Notes
-* 
-
+## Unit 10 - Automatic Scaling and Monitoring
 ### True/False
-1.
+1. Elastic Load Balancing can distribute loads across availability zones and regions. - False
+2. An Application Load Balancer works at the application communication layer and therefore can distribute loads based on application-layer communication protocols, like HTTPS. - True
+3. A Network Load Balancer works at the network communication layer and therefore can distribute loads based on IP and ICMP messages. - False
+4. An Application Load Balancer can be configured to startup new RDS instances if needed. - False
+5. When the load balancer detects an unhealthy target, it stops routing traffic to that target. - True
+6. Elastic Load Balancing can enable you to distribute loads to AWS resources and on-premise resources. - True
+7. You can create an alarm to monitor any Amazon CloudWatch metric in your account. - True
+8. CloudWatch alarms can be used to send notifications to SNS or trigger to EC2 Auto Scaling action or EC2 action. - True
+9. With CloudWatch, you gain system-wide visibility into resource utilization, application performance, and operational health. - True
+10. You can also use Amazon CloudWatch Events to define rules that match incoming events (or changes in your AWS environment) and route them to targets for processing. - True
+11. CloudWatch can route events to various targets, including Lambda functions, ECS tasks, and Step function state machines. - True
+12. Using Autoscaling can help maintain availability but it will always cost more than an infrastructure consisting of only reserved-capacity resources. - False
+13. EC2 Auto Scaling can detect impaired EC2 instances and replace them. - True
+14. An Auto Scaling group is a collection of EC2 instances that are started and stopped together. - False
+15. To launch EC2 instances, an Auto Scaling group must have a launch configuration that includes an AMI Id and instance type. - True
+16. EC2 Auto Scaling supports scheduled, dynamic, predictive, and manual scaling. - True
+17. Horizontal scaling is limited by current hardware technology. - False
+18. Vertical scaling an EC2 instance can be automated without shutting the instance down and restarting it. - True
+19. You can create a CloudWatch alarm based on a static threshold, anomaly detection, or a metric math expression. - True
 
 ### Multi Select
-1.
-
-### Multi Choice
-1.
+1. Which of the following are reasons to use a load balancer? - to create a public entry point into your VPC | to help with scalability | Achieve better fault toelrance | achieve high availability
