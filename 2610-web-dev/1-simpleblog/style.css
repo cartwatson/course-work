@@ -1,0 +1,70 @@
+a {
+    color: black;
+}
+
+a.title {
+    color: black;
+    text-decoration: none;
+    font-family: monospace;
+}
+
+a.title:hover {
+    color: blueviolet;
+}
+
+code {
+    font-size: 2rem;
+    text-decoration: underline;
+    text-decoration-color: aquamarine;
+}
+
+h2.title {
+    font-size: 4rem;
+    font-style: italic;
+}
+
+ol {
+    background-color: aqua;
+}
+
+li.navblock {
+    background-color: aqua;
+}
+
+li.desc:nth-child(even) {
+    background-color: pink;
+}
+
+li.desc:nth-child(odd) {
+    background-color: plum;
+}
+
+.HTMLElements {
+    background-color: #000000;
+}
+
+p.content {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p.byline {
+    font-size: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+#content {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 1.5rem;
+}
+
+img {
+    padding: 1rem;
+}

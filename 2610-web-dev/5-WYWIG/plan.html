@@ -1,0 +1,73 @@
+<title>Software Development Plan</title>
+<h1>Requirements Specification</h1>
+    <!--A detailed written description of the problem this program aims to solve.
+    Describe what a good solution looks like.
+    List what you already know how to do.
+    Point out any challenges that you can foresee. -->
+    <P>The program will provide the user with a UI that allows them to input their weight (as a number) and the unit of their weight, press a convert button, and see how much their weight is worth in the current price of gold</P>
+    <P>The program will provide this UI through a single page application</P>
+    <P>The unitconversion will take place in the django app, all hardcoded values are in a migration</P>
+    <P>The price of gold comes from querying the NASDAQ through their API</P>
+    <P>Challenges will include; breaking down the HTTP response for unit conv, and querying NASDAQ.  The rest has already been implemented in other projects and should be familiar</P>
+
+<h1>System Analysis</h1>
+    <!-- List all of the data that is used by the program, making note of where it comes from.
+    Explain what form the output will take.
+    Describe what algorithms and formulae will be used (but don’t write them yet). -->
+    <P>Nasdaq querying, input is json output is a single global js variable</P>
+    <P>DB querying, input is a http requet output is JSON</P>
+    <P>input out weight and unit from user, output of div, inserted into the DOM from JS</P>
+
+<h1>Design</h1>
+    <!-- Function signatures that include:
+    Descriptive names.
+    Parameter lists.
+    Documentation strings that explain the purpose, inputs and outputs.
+    Pseudocode that captures how each function works.
+    Explain what happens in the face of good and bad input.
+    Write a few specific examples that occurred to you. -->
+    <P>The only functions will be the AddDiv called when the user converts and fetch requests made for nasdaq</P>
+    <P>The AddDiv is very simple, it takes a little bit of information about the div, the weight and unit and adds a new div to the page via the DOM.</P>
+    <P>AddDiv will make a request for unitconv in order to correctly calculate the information for the div</P>
+    <P>The fetch request is made async</P>
+    <P>It takes the url </P>
+
+<h1>Implementation</h1>
+    <!-- (More or less) working Python code. -->
+    <P></P>
+
+<h1>Testing & Documentation</h1>
+    <!-- A set of test cases that you have personally run on your computer.
+    Include a description of what happened for each test case.
+    For any bugs discovered, describe their cause and remedy.
+    Write your test cases in plain language such that a non-coder could run them and replicate your experience. -->
+    <P>User puts in no weight</P>
+    <P>User puts in no unit (inspect element and delete)</P>
+    <P>User trys to query nasdaq without connection</P>
+    <P>User puts in a negative weight</P>
+
+<h1>Deployment</h1>
+    <!-- Your repository pushed to GitLab. -->
+    <P>Submitted to canvas</P>
+
+<h1>Maintenance</h1>
+    <!-- Write brief and honest answers to these questions: (Note: do this before you complete Phase 5: Deployment)
+    What parts of your program are sloppily written and hard to understand?
+    Are there parts of your program which you aren’t quite sure how/why they work?
+    If a bug is reported in a few months, how long would it take you to find the cause?
+    Will your documentation make sense to
+    anybody besides yourself?
+    yourself in six month’s time?
+    How easy will it be to add a new feature to this program in a year?
+    Will your program continue to work after upgrading
+    your computer’s hardware?
+    the operating system?
+    to the next version of Python? -->
+    <P>This is my first time interfacing a lot of things so I know that I haven't done it in the most efficient or readable way</P>
+    <P>As such this code may struggle to be maintained</P>
+    <P>This code relys on the user having django installed</P>
+    <P>It also requires my private key to NASDAQ</P>
+    <P>This should work across python3 and django 4? I believe it's django 4</P>
+    <P>This should work on any operating system with the above installations of python and django</P>
+    <P>It uses vanilla JS, HTML, and CSS so there shouldn't be any issues there</P>
+    <P>Should work across any hardware that is still functioning and connected to wifi (for NASDAQ querying)</P>

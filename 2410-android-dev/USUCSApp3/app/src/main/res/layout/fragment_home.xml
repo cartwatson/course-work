@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <!-- Page -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#DDDDDD">
+        <!-- Top bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <!-- TODO: Insert logo -->
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/page_title"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:background="#00263A"
+                android:textSize="24sp"
+                android:padding="6dp"/>
+        </LinearLayout>
+        <!-- Rest of Page -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!-- Bubbles with info -->
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+                        <!-- # of students -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="4dp">
+                            <TextView
+                                android:id="@+id/editTextTextPersonName"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:background="@drawable/circle"
+                                android:ems="10"
+                                android:text="560"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="@color/white"
+                                android:textSize="40sp"
+                                android:layout_margin="2dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:text="Number of Students"
+                                android:textColor="@color/black"
+                                android:background="@null"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+                        <!-- bachelor degrees -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="4dp">
+                            <TextView
+                                android:id="@+id/bachelorDegrees"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:background="@drawable/circle"
+                                android:ems="10"
+                                android:text="122"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="@color/white"
+                                android:textSize="40sp"
+                                android:layout_margin="2dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:text="Bachelor Degrees"
+                                android:textColor="@color/black"
+                                android:background="@null"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                        <!-- graduate degrees -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="4dp">
+                            <TextView
+                                android:id="@+id/graduateDegrees"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:background="@drawable/circle"
+                                android:ems="10"
+                                android:text="26"
+                                android:gravity="center_vertical|center_horizontal"
+                                android:textColor="@color/white"
+                                android:textSize="40sp"
+                                android:layout_margin="2dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:text="Graduate Degrees"
+                                android:textColor="@color/black"
+                                android:background="@null"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+                <!-- Undergrad programs -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Undergraduate Programs"
+                        android:textColor="@color/white"
+                        android:background="#00263A"
+                        android:textSize="24sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The Computer Science Department offers multiple programs for Undergraduate Students including:"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"/>
+                    <!-- bullet points -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; BS Computer Science"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; 5-Year Combined BS/MS in Computer Science"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Computer Science Minor"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Computer Science Teaching Minor"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                </LinearLayout>
+                <!-- Graduate programs -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Graduate Programs"
+                        android:textColor="@color/white"
+                        android:background="#00263A"
+                        android:textSize="24sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="The Computer Science Department offers several programs for Graduate Students including:"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"/>
+                    <!-- bullet points -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Two options for Computer Science MS"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Master of Computer Science"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Data Science MS"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="&#8226; Computer Science PhD"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                </LinearLayout>
+                <!-- Name of department head & contact info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Important Info"
+                        android:textColor="@color/white"
+                        android:background="#00263A"
+                        android:textSize="24sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Department Head: Dr. Xiaojun Qi"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Info"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"/>
+                    <!-- Bullet Points of Contact Info -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address: 4205 Old Main Hill, Office 414 Old Main Bldg, Logan, UT 84322"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Phone: (435) 797-2451"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="2dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Email: usucs@aggies.usu.edu"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:paddingStart="16dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="2dp"/>
+                </LinearLayout>
+                <!-- Padding -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout> <!-- Page -->
+</androidx.constraintlayout.widget.ConstraintLayout>

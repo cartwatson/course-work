@@ -1,0 +1,73 @@
+<title>Software Development Plan</title>
+<h1>Requirements Specification</h1>
+    <!--A detailed written description of the problem this program aims to solve.
+    Describe what a good solution looks like.
+    List what you already know how to do.
+    Point out any challenges that you can foresee. -->
+    <P>Program needs to not contain html, bar this file.  All HTML elements should be produced by JavaScript</P>
+    <P>Program needs to take two numeric inputs, one color input, and one select input</P>
+    <P>Program should process these inputs when Compute button is pressed</P>
+    <P>New Divs should be added to the page when the compute button is pressed, they should be added in order from top to bottom</P>
+    <P>Program should produce an error div when an operand is not selected</P>
+
+<h1>System Analysis</h1>
+    <!-- List all of the data that is used by the program, making note of where it comes from.
+    Explain what form the output will take.
+    Describe what algorithms and formulae will be used (but don’t write them yet). -->
+    <P>Program needs to take two numeric inputs, one color input, and one select input</P>
+    <P>Program should process these inputs when Compute button is pressed</P>
+    <P>New Divs should be added to the page when the compute button is pressed, they should be added in order from top to bottom</P>
+    <P>Program should produce an error div when an operand is not selected</P>
+    <P>no algorithms or formulae needed (bar basic alrithmatic)</P>
+
+<h1>Design</h1>
+    <!-- Function signatures that include:
+    Descriptive names.
+    Parameter lists.
+    Documentation strings that explain the purpose, inputs and outputs.
+    Pseudocode that captures how each function works.
+    Explain what happens in the face of good and bad input.
+    Write a few specific examples that occurred to you. -->
+    <P>result(var operandOne, var operandTwo, var op, var color)</P>
+    <P>the first three inputs are printed out but are also used to determine the result of the equation</P>
+    <P>Color is used to determine color of the div</P>
+    <P>If operandOne or OperandoTwo is "" the function outputs and error message to the user</P>
+
+<h1>Implementation</h1>
+    <!-- (More or less) working Python code. -->
+    <P></P>
+
+<h1>Testing & Documentation</h1>
+    <!-- A set of test cases that you have personally run on your computer.
+    Include a description of what happened for each test case.
+    For any bugs discovered, describe their cause and remedy.
+    Write your test cases in plain language such that a non-coder could run them and replicate your experience. -->
+    <P>Tested error cases</P>
+    <P>Tested adding new divs after deleting most recent div</P>
+    <P>Tested adding new divs after deleting all divs</P>
+    <P>Tested all operands</P>
+    <P>Tested decimals and negative numbers for operands</P>
+
+<h1>Deployment</h1>
+    <!-- Your repository pushed to GitLab. -->
+    <P></P>
+
+<h1>Maintenance</h1>
+    <!-- Write brief and honest answers to these questions: (Note: do this before you complete Phase 5: Deployment)
+    What parts of your program are sloppily written and hard to understand?
+    Are there parts of your program which you aren’t quite sure how/why they work?
+    If a bug is reported in a few months, how long would it take you to find the cause?
+    Will your documentation make sense to
+    anybody besides yourself?
+    yourself in six month’s time?
+    How easy will it be to add a new feature to this program in a year?
+    Will your program continue to work after upgrading
+    your computer’s hardware?
+    the operating system?
+    to the next version of Python? -->
+    <P>This is my first JS project and likely is written naively and sloppily, I'm sure there are more efficient ways for writing the code I did.</P>
+    <P>I understand how my program works thoroughly.</P>
+    <P>My code is fairly simplistic, it would not take long to find a bug should one be found.</P>
+    <P>This documentation should be complete enough to make sense to anyone that reads it.</P>
+    <P>It would be easy to extend this code in the future.</P>
+    <P>Vanilla JS should be supported by everything for a long time, and should work on all hardware.</P>

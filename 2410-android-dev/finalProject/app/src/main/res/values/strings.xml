@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">finalProject</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="description_of_ticket">Description of ticket</string>
+    <string-array name="status_array">
+        <item>TODO</item>
+        <item>IN PROGRESS</item>
+        <item>DONE</item>
+    </string-array>
+</resources>

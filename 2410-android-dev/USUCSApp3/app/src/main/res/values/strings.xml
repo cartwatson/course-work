@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">USUCSApp3</string>
+    <string name="title_home">Home</string>
+    <string name="title_faculty">Faculty</string>
+    <string name="title_research">Research</string>
+    <string name="page_title">Computer Science</string>
+</resources>
