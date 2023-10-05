@@ -1,5 +1,6 @@
 *.csv
 *.exe
+*.pyc
 **/.vscode
 5250-intro-to-cloud-computing/**/*.jar
 5250-intro-to-cloud-computing/**/*.png
