@@ -1,4 +1,9 @@
-5050-advanced-algorithms/**/*.pdf
 *.csv
 *.exe
+*.pyc
 **/.vscode
+5250-intro-to-cloud-computing/**/*.jar
+5250-intro-to-cloud-computing/**/*.png
+5250-intro-to-cloud-computing/**/*.html
+5250-intro-to-cloud-computing/**/*.json
+5050-advanced-algorithms/**/*.pdf
