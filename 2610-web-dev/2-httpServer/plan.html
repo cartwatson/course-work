@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Software Development Plan</title>
+    </head>
+    <body>
+        <h1>Software Development Plan</h1>
+        <div style="background-color: lightgray">
+            <h2>Requirements Specification</h2>
+            <!--A detailed written description of the problem this program aims to solve.
+            Describe what a good solution looks like.
+            List what you already know how to do.
+            Point out any challenges that you can foresee. -->
+            <P>This program will include the files from the previous static blog assignment</P>
+            <p>This program will also now feature a webserver written in python using the class "http.server — HTTP servers"</p>
+            <P>This server will direct to the previously mentioned blog pages, it will also handle the following errors: 404, 403, 418, and 301</P>
+            <P>This server will only respond to HTTP GET requests</P>
+            <P>This server will use 301 redirects in a variety of ways to make it easy to navigate for the end user; filename extensions can be ignored, filenames can be mispelled (to a degree)
+                filenames can be similar in meaning (again, to a degree), some files will not use their filename, etc</P>
+            <p>The server will provide a favicon if the browser requests it</p>
+            <P>The server will have a debugging page that is generated at runtime</P>
+            <P>The server will handle error 418, teapot</P>
+            <P>The server will handle error 403, forbidden</P>
+        </div>
+        <div style="background-color: lightblue">
+            <h2>System Analysis</h2>
+            <!-- List all of the data that is used by the program, making note of where it comes from.
+            Explain what form the output will take.
+            Describe what algorithms and formulae will be used (but don’t write them yet). -->
+            <P>All data for the program should come from the files provided from assign1 and the webserver</P>
+        </div>
+        <div style="background-color: lightcoral">
+            <h2>Design</h2>
+            <!-- Function signatures that include:
+            Descriptive names.
+            Parameter lists.
+            Documentation strings that explain the purpose, inputs and outputs.
+            Pseudocode that captures how each function works.
+            Explain what happens in the face of good and bad input.
+            Write a few specific examples that occurred to you. -->
+            <h5>CS2610Assn2.py will contain the following methods: dataHelper, do_GET</h5>
+            <h4>dataHelper(self, requestHandler, type_location, fileName, code)</h4>
+            <P>It will take in data and handle the writing to the server</P>
+            <P>requestHandler will be a CS2610Assn2 obj</P>
+            <P>code is the error/success code that is included in the HTTP header</P>
+            <p>type_location will be the location if the code is 301 Moved Permanently</p>
+            <P>type_location will be the type if the code is not 301 Moved Permanently</P>
+            <p>filename will be a file name if code is 200 OK, otherwise it is unused</p>
+            <h4>do_get(self)</h4>
+            <p>do_get overrides the default function from BaseHTTPRequestHandler</p>
+            <p>it returns nothing and has no parameters besides self</p>
+            <P>it will handle GET requests</P>
+            <h4>Good and bad input</h4>
+            <p>if the user tries to go to a file that doesn't exist the program will give an error 404 page not found</p>
+            <p>if the user tries to go to the forbidden page it will give an error 403 forbidden</p>
+            <p>if the user tries to go to the teapot page it will give an error 418 teapot</p>
+            <p>all good input should be handled</p>
+        </div>
+        <div style="background-color: lightcyan">
+            <h2>Implementation</h2>
+            <!-- (More or less) working Python code. -->
+            <P>HTML, CSS, and Python code</P>
+        </div>
+        <div style="background-color: lightgoldenrodyellow">
+            <h2>Testing & Documentation</h2>
+            <!-- A set of test cases that you have personally run on your computer.
+            Include a description of what happened for each test case.
+            For any bugs discovered, describe their cause and remedy.
+            Write your test cases in plain language such that a non-coder could run them and replicate your experience. -->
+            <P>the following pages should be attempted to be visited</p>
+                <ul>
+                    <li>/</li>
+                    <li>/index</li>
+                    <li>/index.html</li>
+                    <li>/bio</li>
+                    <li>/bioasdf</li>
+                    <li>/about</li>
+                    <li>/about.html</li>
+                    <li>/tips</li>
+                    <li>/techtips+css</li>
+                    <li>/techtips+css.html</li>
+                    <li>/help</li>
+                    <li>/techtips-css</li>
+                    <li>/techtips-css.html</li>
+                    <li>/forbidden</li>
+                    <li>/teapot</li>
+                    <li>/asdfdhafkjhdalkfjh</li>
+                </ul>
+            <p>Attempting to visit these pages will bring a user to every page available</p>
+            <p>A user could also visit /plan.html but visiting that page is not intended</p>
+        </div>
+        <div style="background-color: lightgreen">
+            <h2>Deployment</h2>
+            <!-- Your repository pushed to GitLab. -->
+            <P>Repo is pushed to personal github https://github.com/cartwatson/2410-WebDev/tree/main/2-webserver (May be private repo)</P>
+        </div>
+        <div style="background-color: lightpink">
+            <h2>Maintenance</h2>
+            <!-- Write brief and honest answers to these questions: (Note: do this before you complete Phase 5: Deployment)
+            What parts of your program are sloppily written and hard to understand?
+            Are there parts of your program which you aren’t quite sure how/why they work?
+            If a bug is reported in a few months, how long would it take you to find the cause?
+            Will your documentation make sense to
+            anybody besides yourself?
+            yourself in six month’s time?
+            How easy will it be to add a new feature to this program in a year?
+            Will your program continue to work after upgrading
+            your computer’s hardware?
+            the operating system?
+            to the next version of Python? -->
+            <P>The method dataHelper could be cleaned up to not user the same variable for two purposes</P>
+            <P>The documentation should be complete and file should be readable without comments but some are included for readability</P>
+            <p>This server should work on at minimum python versions >=3.10</p>
+        </div>
+    </body>
+</html>

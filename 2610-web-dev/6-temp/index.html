@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>VueJS Weather App</title>
+		<meta charset="utf-8">
+		<link href="style.css" rel="stylesheet">
+		<script src="https://unpkg.com/vue@next"></script>
+	</head>
+
+	<body>
+		<div id="app">
+			<!---- TITLE DIV ---->
+			<div id="TitleDiv" class="stuff-box" style="background-color: gray;">
+				<P class="title">Vue.JS Weather App</P>
+			</div>
+
+
+			<!---- LOCATION DIV ---->
+			<!-- if location not loaded yet: -->
+			<div v-if="locationLoaded === 0" class="stuff-box" style="background-color: darkcyan;">
+				<P class="title">Your Location</P>
+				<p>Location Loading...</p>
+			</div>
+
+			<!-- if-else: // location is loaded -->
+			<div v-else-if="locationLoaded === 1" id="LocationDiv" class="stuff-box" style="background-color: lightblue;">
+				<P class="title">Your Location</P>
+				<p>You are located in {{ city }}, {{ region }}, {{ country }} at coordinates ({{ latitude }}, {{ longitude }})</p>
+			</div>
+
+			<!-- else: // error loading location -->
+			<div v-else class="stuff-box" style="background-color: darkred;">
+				<P class="title">Your Location</P>
+				<p>Error loading your location. Try again later.</p>
+			</div>
+
+
+			<!------ WEATHER DIVS ------>
+			<!---- CURRENT CONDITIONS ---->
+			<!-- if weather not loaded yet: -->
+			<div v-if="weatherLoaded === 0"  class="stuff-box" style="background-color: darkcyan;">
+				<P class="title">Weather</P>
+				<p>Weather Loading...</p>
+			</div>
+
+			<!-- if-else: // weather is loaded -->
+			<div id="CurrConditions" v-else-if="weatherLoaded === 1" class="stuff-box" style="background-color: lightgreen;">
+				<P class="title">Current Conditions</P>
+				<P> Current weather condtions @ {{ date }}</P>
+				<ul>
+					<li>Temperature: {{ temperature }}F</li>
+					<li>High: {{ tempHigh }}F</li>
+					<li>Low: {{ tempLow }}F</li>
+					<li>Condtions: {{ conditions }}</li>
+					<li>Humidity: {{ humidity }}%</li>
+					<li>Pressure: {{ pressure }} hPa</li>
+				</ul> 
+			</div>
+
+			<!-- else: //error in loading weather -->
+			<div v-else class="stuff-box" style="background-color: darkred;">
+				<P class="title">Weather</P>
+				<p>Error loading weather information. Try again later.</p>
+			</div>
+		
+	
+			<!---- 5-DAY 3-HOUR FORECASTS ---->
+			<!-- if forecast not loaded yet: -->
+			<div v-if="forecastLoaded === 0"  class="stuff-box" style="background-color: darkcyan;">
+				<P class="title">5-day 3-hour Forecast</P>
+				<p>Forecast Loading...</p>
+			</div>
+
+			<!-- if-else: // forecast is loaded -->
+			<div id="Forecast" v-else-if="forecastLoaded === 1" class="stuff-box" style="background-color: lightcoral;">
+				<P class="title">5-day 3-hour Forecast</P>
+				<p>
+					<span style="color: red;">{{ unlikelyCounter }} unlikely </span>
+					<span style="color: gray;">{{ neutralCounter }} neutral </span>
+					<span style="color: green;">{{ likelyCounter }} likely</span>
+				</p>
+				<!-- autopopulate divs with forecast info -->
+				<div v-for="forecast in forecasts" class="stuff-box" v-on:click="rotateState" style="background-color: gray;">
+					<P>Conditions for {{ forecast.date }}</P>
+					<ul>
+						<li>Temperature: {{ forecast.temperature }}F</li>
+						<li>High: {{ forecast.tempHigh }}F</li>
+						<li>Low: {{ forecast.tempLow }}F</li>
+						<li>Condtions: {{ forecast.conditions }}</li>
+						<li>Humidity: {{ forecast.humidity }}%</li>
+						<li>Pressure: {{ forecast.pressure }} hPa</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- else: //error in loading forecast -->
+			<div v-else class="stuff-box" style="background-color: darkred;">
+				<P class="title">5-day 3-hour Forecast</P>
+				<p>Error loading forecast information. Try again later.</p>
+			</div>
+
+		</div> <!--APP-->
+
+
+		<!---- SCRIPT ---->
+		<script src="script.js"></script>
+	</body>
+</html>

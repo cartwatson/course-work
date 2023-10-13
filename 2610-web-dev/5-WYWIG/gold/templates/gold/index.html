@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'gold/style.css' %}">
+        <title>Home</title>
+    </head>
+    <body>
+        <div id="upperDiv">
+            <h2 style="text-align: center;">Worth Your Weight In Gold</h2>
+            <P style="text-align: center;">Input your weight and select the proper units. </P>
+            <P style="text-align: center;">Press convert to see that you're worth your weight in gold!</P>
+            <span style="display: block; text-align: center;">
+                <input id="weight" type="number">
+                <select id="unit">
+                    <option>U.S. Ton (T)</option>
+                    <option>Gram (g)</option>
+                    <option>Troy Ounce (t_oz)</option>
+                    <option>Kilogram (kg)</option>
+                    <option>Imperial Pound (lb)</option>
+                    <option>Ounce (oz)</option>
+                </select>
+                <!-- TODO: make this a real callback function -->
+                <button onclick="callback(weight.value, unit.value)">Convert</button> <!-- add gold.value -->
+                <p id="priceMessage"></p>
+            </span>
+        </div> <!-- upperDiv -->
+        <div id="lowerDiv"></div>
+        <!-- scripts -->
+        <script src="{% static 'gold/script.js' %}"></script>
+        <script src="{% static 'gold/newDiv.js' %}"></script>
+        <script src="{% static 'gold/queryNASDAQ.js' %}"></script>
+    </body>
+</html>

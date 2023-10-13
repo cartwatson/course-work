@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_todo"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="TODO" />
+
+    <item
+        android:id="@+id/navigation_doing"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="IN PROGRESS" />
+
+    <item
+        android:id="@+id/navigation_done"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="DONE" />
+</menu>

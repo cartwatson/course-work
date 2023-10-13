@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+        <title>About</title>
+    </head>
+    <body>
+        <h1>About An Almost Sentient Rubiks Cube</h1>
+        <P>You're visiting from: {{ ip }}</P>
+        <ol class="navBlock">
+            <li class="navBlock"><a href="/blog/">Blog</a></li>
+            <li class="navBlock"><a href="/blog/about.html">About</a></li>
+            <li class="navBlock"><a href="/blog/archive">Archive</a></li>
+            <li class="navBlock"><a href="/blog/techtips+css.html">techtips+css</a></li>
+            <li class="navBlock"><a href="/blog/techtips-css.html">techtips-css</a></li>
+        </ol>
+        <h1>Blog Archive</h1>
+        {% if blog_list %} <!-- all blog posts displayed newest first -->
+            <ul>
+                {% for post in blog_list %}
+                    <!-- display title -->
+                    <h2><a href=../{{post.id}}>Title: {{ post.title }}</a></h2>
+                    <!-- truncate posts to first 100 words -->
+                    <P>{{ post.content|truncatewords:100 }}</P>
+                    <!-- display # of comments -->
+                    <p>Number of comments: {{ post.get_comment_count }}</p>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No blog posts available.</p>
+        {% endif %}
+    </body>
+</html>

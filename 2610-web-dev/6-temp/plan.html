@@ -1,0 +1,65 @@
+<title>Software Development Plan</title>
+<h1>Requirements Specification</h1>
+    <!--A detailed written description of the problem this program aims to solve.
+    Describe what a good solution looks like.
+    List what you already know how to do.
+    Point out any challenges that you can foresee. -->
+    <P>Program must make a call to the IP API to find the user's latitude and longitude</P>
+    <P>Program must make a call to the weather API, using the user's latitude and longitude</P>
+    <P>Call should return current conditions</P>
+    <P>Results should come back in imperial units</P>
+    <P>While results are pending, loading indictor is displayed, removed when results are returned</P>
+    <P>Make a call to the weather API for the 5-day 3-hour forecast</P>
+    <P>All results displayed in their own divs</P>
+    <P>Divs are color coded to "defualt", "likely", and "unlikely"</P>
+    <P>Display a count for the number of each of the likelyhoods</P>
+
+<h1>System Analysis</h1>
+    <!-- List all of the data that is used by the program, making note of where it comes from.
+    Explain what form the output will take.
+    Describe what algorithms and formulae will be used (but don’t write them yet). -->
+    <P>Vue needs to get the user's IP address</P>
+    <P>The IP address is used to get the users latitude and longitude from FreeGeoIP</P>
+    <P>The latitude and longitude are provided to OpenWeatherApp to get current weather conditions</P>
+    <P>The latitude and longitude are provided to OpenWeatherApp to get 5-day 3-hour forecast</P>
+    <P>VueJS handles all of that information and displays it to the user through manipulating the DOM</P>
+
+<h1>Design</h1>
+    <!-- Function signatures that include:
+    Descriptive names.
+    Parameter lists.
+    Documentation strings that explain the purpose, inputs and outputs.
+    Pseudocode that captures how each function works.
+    Explain what happens in the face of good and bad input.
+    Write a few specific examples that occurred to you. -->
+    <P></P>
+
+<h1>Implementation</h1>
+    <!-- (More or less) working Python code. -->
+    <P></P>
+
+<h1>Testing & Documentation</h1>
+    <!-- A set of test cases that you have personally run on your computer.
+    Include a description of what happened for each test case.
+    For any bugs discovered, describe their cause and remedy.
+    Write your test cases in plain language such that a non-coder could run them and replicate your experience. -->
+    <P></P>
+
+<h1>Deployment</h1>
+    <!-- Your repository pushed to GitLab. -->
+    <P>Zipped and put on canvas</P>
+
+<h1>Maintenance</h1>
+    <!-- Write brief and honest answers to these questions: (Note: do this before you complete Phase 5: Deployment)
+    What parts of your program are sloppily written and hard to understand?
+    Are there parts of your program which you aren’t quite sure how/why they work?
+    If a bug is reported in a few months, how long would it take you to find the cause?
+    Will your documentation make sense to
+    anybody besides yourself?
+    yourself in six month’s time?
+    How easy will it be to add a new feature to this program in a year?
+    Will your program continue to work after upgrading
+    your computer’s hardware?
+    the operating system?
+    to the next version of Python? -->
+    <P></P>

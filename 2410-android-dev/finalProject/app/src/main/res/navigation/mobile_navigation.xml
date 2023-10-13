@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_todo">
+
+    <fragment
+        android:id="@+id/navigation_todo"
+        android:name="com.jcarterw.finalproject.ui.todo.TodoFragment"
+        android:label="TODO"
+        tools:layout="@layout/fragment_todo" />
+
+    <fragment
+        android:id="@+id/navigation_doing"
+        android:name="com.jcarterw.finalproject.ui.doing.DoingFragment"
+        android:label="IN PROGRESS"
+        tools:layout="@layout/fragment_doing" />
+
+    <fragment
+        android:id="@+id/navigation_done"
+        android:name="com.jcarterw.finalproject.ui.done.DoneFragment"
+        android:label="DONE"
+        tools:layout="@layout/fragment_done" />
+</navigation>
