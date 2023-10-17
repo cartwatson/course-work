@@ -51,7 +51,7 @@ Design an O(n) time algorithm to compute an optimal location for the main pipeli
 ## Question 4
 Here is a generalized version of the selection problem, called multiple selection.  
 Let A[1 ··· n] be an array of n numbers.
-Given a sequence of m sorted integers k1, k2, ..., km, with 1 ≤ k1 < k2 < ··· < km ≤ n, the multiple selection problem is to find the ki-th smallest number in A for all i = 1, 2, ..., m.
+Given a sequence of m sorted integers k1, k2, ..., km, with 1 =< k1 < k2 < ··· < km =< n, the multiple selection problem is to find the ki-th smallest number in A for all i = 1, 2, ..., m.
 For simplicity, we assume that no two numbers of A are equal.
 For example, let A = {1, 5, 9, 3, 7, 12, 15, 8, 21}, and m=3 with k1 = 2, k2 = 5, and k3 = 7
 Hence, the goal is to find the 2nd, the 5-th, and the 7-th smallest numbers of A, which are 3, 8, and 12, respectively.  
