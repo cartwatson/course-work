@@ -15,7 +15,19 @@ So the output of your algorithm may be either 12 or the index of 12 in A.
 
 ### Answer
 ```c++
-// cut in half a lot
+// Algorithm FindPeak(A, low, high)
+//     Input: A (array), low (starting index), high (ending index)
+//     Output: peak value or index of peak value in array A
+
+// if low > high
+//     return "No peak found"  // Error case
+// mid = (low + high) / 2
+// if A[mid] < A[mid - 1]
+//     return FindPeak(A, low, mid - 1)  // Search in the left half
+// else if A[mid] < A[mid + 1]
+//     return FindPeak(A, mid + 1, high)  // Search in the right half
+// else
+//     return mid
 ```
 
 ## Question 2
@@ -25,7 +37,11 @@ Please justify your answer
 
 ### Answer
 ```c++
-
+// yes, the median of medians algorithm can be generalized to work with groups of seven
+// The Median of Medians algorithm still works with groups of seven because dividing the data into groups of seven, finding the median of each group,
+// and then finding the median of these medians serves the same purpose as with groups of five.
+// It provides a good pivot for partitioning the array, ensuring that a significant fraction of elements are eliminated in each recursive step,
+// which maintains the linear time complexity of the algorithm.
 ```
 
 ## Question 3
@@ -51,7 +67,7 @@ Design an O(n) time algorithm to compute an optimal location for the main pipeli
 ## Question 4
 Here is a generalized version of the selection problem, called multiple selection.  
 Let A[1 ··· n] be an array of n numbers.
-Given a sequence of m sorted integers k1, k2, ..., km, with 1 ≤ k1 < k2 < ··· < km ≤ n, the multiple selection problem is to find the ki-th smallest number in A for all i = 1, 2, ..., m.
+Given a sequence of m sorted integers k1, k2, ..., km, with 1 =< k1 < k2 < ··· < km =< n, the multiple selection problem is to find the ki-th smallest number in A for all i = 1, 2, ..., m.
 For simplicity, we assume that no two numbers of A are equal.
 For example, let A = {1, 5, 9, 3, 7, 12, 15, 8, 21}, and m=3 with k1 = 2, k2 = 5, and k3 = 7
 Hence, the goal is to find the 2nd, the 5-th, and the 7-th smallest numbers of A, which are 3, 8, and 12, respectively.  
@@ -65,14 +81,24 @@ Hence, the goal is to find the 2nd, the 5-th, and the 7-th smallest numbers of A
 ### Answer
 ```c++
 // A
-    // perform quick sort on the array
-    // grab values with index (constant time)
+    // perform quick sort on the array - O(nlogn)
+    // grab values with desired indeces - O(n)
+    // return results
  
 // B
-    //
+    // Initialize an empty array - Result
+    // For each index ki in K
+        // Find the ki-th smallest element in A using QuickSelect
+        // Append the found element to Result
+    // Return Result
 
 // C
-    //
+    // Build a Balanced Binary Search Tree (BBST) from array A
+    // Initialize an empty array - Result
+    // For each index ki in K
+    //     Find the ki-th smallest element in BBST
+    //     Append the found element to Result
+    // Return Result
 
 ```
 
@@ -86,4 +112,27 @@ Test your algorithm’s running time with various sizes of A and different ks.
 
 ### Answer
 ```python
+def median_of_medians(A, i):
+
+    # Divide A into sublists of len 5
+    sublists = [A[j:j+5] for j in range(0, len(A), 5)]
+    medians = [sorted(sublist)[len(sublist)//2] for sublist in sublists]
+    if len(medians) <= 5:
+        # Base case
+        pivot = sorted(medians)[len(medians)//2]
+    else:
+        # Recursive call
+        pivot = median_of_medians(medians, len(medians)//2)
+
+    # Partitioning step
+    low = [j for j in A if j < pivot]
+    high = [j for j in A if j > pivot]
+
+    k = len(low)
+    if i < k:
+        return median_of_medians(low, i)
+    elif i > k:
+        return median_of_medians(high, i - k - 1)
+    else:  # pivot = k
+        return pivot
 ```
