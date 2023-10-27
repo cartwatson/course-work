@@ -10,4 +10,7 @@
 5260-cloud-computing-fundamentals/**/*.png
 5260-cloud-computing-fundamentals/**/*.html
 5260-cloud-computing-fundamentals/**/*.json
+**/*.pdf
+5030-high-performance-computing/**/*.pdf
 5050-advanced-algorithms/**/*.pdf
+

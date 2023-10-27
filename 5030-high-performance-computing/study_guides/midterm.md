@@ -268,3 +268,13 @@ int main(int argc, char** argv) {
 - **Consistency and Coherency**: Ensuring data is consistent across multiple operations and processes.
 - **Load Balancing**: Avoiding I/O hotspots and ensuring efficient utilization of I/O resources.
 - **Scalability**: Ensuring I/O performance scales with the number of processes and size of data.
+
+## Flynn's Taxonomy of Parallel Architectures
+
+| Category | Description                                           | Use Cases                                                                 | Advantages                               | Limitations                             |
+|----------|-------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------|-----------------------------------------|
+| SISD     | Single processor executes a single instruction stream | Traditional general-purpose computing                                      | Simplicity, Deterministic behavior      | Can't exploit parallelism               |
+| SIMD     | Single instruction on multiple data elements         | Large datasets where each operation is independent (e.g., image processing) | High data throughput                     | Depends on uniformity of operations     |
+| MISD     | Different instructions on the same piece of data     | Fault-tolerant computing, certain signal processing tasks                  | Redundancy, Diverse computations on data | Limited practical use cases             |
+| MIMD     | Different instructions on different data             | Complex applications with diverse tasks (e.g., simulations, AI)             | Flexibility, Exploits data & task parallelism | Communication overhead, Coordination challenges |
+
