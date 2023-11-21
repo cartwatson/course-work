@@ -48,7 +48,9 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
     int Col = threadIdx.x + blockIdx.x * blockDim.x;
     int Row = threadIdx.y + blockIdx.y * blockDim.y;
 
+    printf("Hello from block %d, thread %d\n", blockIdx.x, threadIdx.x);//DEBUG
     if (Col < width && Row < height) {
+        printf("inside loop\n");//DEBUG
         // get 1D coordinate for the grayscale image
         int grayOffset = Row*width + Col;
 
@@ -119,30 +121,27 @@ int main(int argc, char *argv[]) {
     unsigned char *d_rgbImage, *d_grayImage;
     cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
     cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
-    // cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS, cudaMemcpyHostToDevice);
-
-// // TEMP DEBUGGING
-//     fp = fopen(debug_file.c_str(), "wb");
-//     if (fp == NULL) {
-//         std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
-//         return 1;
-//     }
-//     fwrite(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
-//     fclose(fp);
-// // TEMP DEBUGGING
+    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
 
     // define block and grid sizes
     dim3 blockSize(16, 16);
     dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
 
+    printf("launching kernel\n")//DEBUG
     // Convert the image to grayscale
     RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
 
+// DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
+    cudaError_t cudaStatus = cudaGetLastError();
+    if (cudaStatus != cudaSuccess) {
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(cudaStatus));
+    }
+// DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
+
     // sync up cuda and data
     cudaDeviceSynchronize();
-    // cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
-    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS, cudaMemcpyDeviceToHost);
+    printf("sync'd kernel\n")//DEBUG
+    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
 
     // clean up
     cudaFree(d_rgbImage);
