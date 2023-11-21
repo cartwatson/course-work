@@ -6,20 +6,26 @@
  * @todo
  * PART 1: CUDA program to convert a color image to gray scale
  * - [X] read the image file
- * - [ ] write a kernal function to perform the gray scale conversion using CUDA
+ * - [X] write a kernal function to perform the gray scale conversion using CUDA
  *   - remember to treat the matrices as 1D arrays and use the corresponding linearization of indexes for every memory access you perform
  *   - provide only the program with your comments as your solution. No need to attach input or output files
  * - [X] save the converted image in a binary file named gc.raw
  * 
  * PART 2: GPU Information
  * - Pick a particular GPU (e.g., from the ones available on a CHPC cluster) and report the information
- *   - [ ] Max num of threads per SM
- *   - [ ] Assume max num of blocks per SM is 8
+ *   - [X] Max num of threads per SM
+ *     - Assume max num of blocks per SM is 8
  * - [ ] choose three different block sizes and explain analytically how the different block sizes should affect the performance of the application made in Part 1
- * - [ ] report experimental results using the three different block sizes
+ * - [X] report experimental results using the three different block sizes
  *   - (i.e., run the kernel 200 times to assess the time accurately)
  * 
  * @note This program is only meant to be run on University of Utah CHPC machines
+ *   Helper info to compile/run on CHPC
+ *     0. ssh to a CHPC machine
+ *     1. salloc -n 1 -N 1 -t 0:15:00 -p notchpeak-shared-short -A notchpeak-shared-short --gres=gpu
+ *     2. module load nvhpc
+ *     3. nvcc -o hw51 hw51.cu
+ *     4. srun ./hw51
  */
 #include <iostream>
 #include <cstdlib>
@@ -162,18 +168,53 @@ int main(int argc, char *argv[]) {
 
 
     // PART 2
-    // Pick a particular GPU (e.g., from the ones available on a CHPC cluster) and report the information
-        // Max num of threads per SM
-        // Assume max num of blocks per SM is 8
     // use device query.cu to get info
+        // nvcc -o device_query device_query.cu
+        // srun ./device_query
+    // Tesla T4
+        // Max num of threads per SM = 1024
 
     // Choose three different block sizes and explain analytically how the different block sizes should affect the performance
+    /**
+     * 8x8
+     *   - Pros: 
+     *   - Cons:
+     * 16x16
+     *   - Pros: 
+     *   - Cons:
+     * 32x32
+     *   - Pros: 
+     *   - Cons:
+    */
     // Report experimental results using the three different block sizes
+    std::vector<int> blockSizes = {8, 16, 32};
+    float totalTime, elapsedTime;
+    cudaEvent_t start, stop;
+
+    // create CUDA events
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    for (int i = 0; i < blockSizes.size(); i++) {
+        totalTime = 0.0f;
+        for (int j = 0; j < 200; j++) {
+            cudaEventRecord(start, 0);
+
+            // run CUDA kernel
+            cudaBlock(h_rgbImage, h_grayImage, blockSizes[i], blockSizes[i], NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);
+            cudaEventElapsedTime(&elapsedTime, start, stop);
+
+            totalTime += elapsedTime;
+        }
+        std::cout << "Average time for block size " << blockSizes[i] << ": " << totalTime / 200.0f << " ms" << std::endl;
+    }
+
+    // Destroy CUDA events
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
     
     return 0;
 }
-
-// salloc -n 1 -N 1 -t 0:15:00 -p notchpeak-shared-short -A notchpeak-shared-short --gres=gpu
-// module load nvhpc
-// nvcc -o hw51 hw51.cu
-// srun ./hw51
