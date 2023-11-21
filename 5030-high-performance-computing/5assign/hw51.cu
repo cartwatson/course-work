@@ -120,8 +120,18 @@ int main(int argc, char *argv[]) {
     cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
     cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
 
+// TEMP DEBUGGING
+    fp = fopen("gc_temp.raw".c_str(), "wb");
+    if (fp == NULL) {
+        std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
+        return 1;
+    }
+    fwrite(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
+    fclose(fp);
+// TEMP DEBUGGING
+
     // define block and grid sizes
-    dim3 blockSize(16, 16); // Example block size
+    dim3 blockSize(16, 16);
     dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
 
     // Convert the image to grayscale
