@@ -68,14 +68,14 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
 /**
  * @brief 
  * 
- * @param h_rgbImage (std::vector<unsigned char>)
- * @param h_grayImage (std::vector<unsigned char>)
+ * @param h_rgbImage (std::vector<unsigned char>) unprocessed rgb image
+ * @param h_grayImage (std::vector<unsigned char>) allocated gray image, passed by reference 
  * @param blocksizeX (int)
  * @param blocksizeY (int)
  * @param NUM_PIXELS (int)
  * @param WIDTH (int)
  * @param HEIGHT (int)
- * @param CHANNELS (int)
+ * @param CHANNELS (int) num of rgb channels
  *
 */
 void cudaBlock(std::vector<unsigned char>& h_rgbImage, std::vector<unsigned char>& h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
     // run cuda kernal
-    cudaBlock(h_rgbImage, h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+    cudaBlock(h_rgbImage, h_grayImage, 32, 32, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
