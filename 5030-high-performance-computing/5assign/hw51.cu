@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     // Read in the image file
-    fread(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
+    fread(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS * CHANNELS, fp);
     fclose(fp);
 
     // run cuda kernal
