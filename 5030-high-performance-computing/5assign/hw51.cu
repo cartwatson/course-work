@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) {
     unsigned char *d_rgbImage, *d_grayImage;
     cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
     cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
-    cudaMemcpy(d_rgbImage, h_rgbImage.data(), rgbImageSize, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
 
     // define block and grid sizes
     dim3 blockSize(16, 16); // Example block size
