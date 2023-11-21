@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
     dim3 blockSize(16, 16);
     dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
 
-    printf("launching kernel\n")//DEBUG
+    printf("launching kernel\n");//DEBUG
     // Convert the image to grayscale
     RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
 
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
     // sync up cuda and data
     cudaDeviceSynchronize();
-    printf("sync'd kernel\n")//DEBUG
+    printf("sync'd kernel\n");//DEBUG
     cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
 
     // clean up
