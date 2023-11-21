@@ -83,6 +83,7 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
 int main(int argc, char *argv[]) {
     // sometimes hardcoding variables is okay
     std::string INPUT_FILE = "gc_conv_1024x1024.raw";
+    std::string debug_file = "gc_temp.raw";
     std::string OUTPUT_FILE = "gc.raw";
     const int WIDTH = 1024;
     const int HEIGHT = 1024;
@@ -118,17 +119,18 @@ int main(int argc, char *argv[]) {
     unsigned char *d_rgbImage, *d_grayImage;
     cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
     cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
-    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
+    // cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS, cudaMemcpyHostToDevice);
 
-// TEMP DEBUGGING
-    fp = fopen("gc_temp.raw".c_str(), "wb");
-    if (fp == NULL) {
-        std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
-        return 1;
-    }
-    fwrite(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
-    fclose(fp);
-// TEMP DEBUGGING
+// // TEMP DEBUGGING
+//     fp = fopen(debug_file.c_str(), "wb");
+//     if (fp == NULL) {
+//         std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
+//         return 1;
+//     }
+//     fwrite(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
+//     fclose(fp);
+// // TEMP DEBUGGING
 
     // define block and grid sizes
     dim3 blockSize(16, 16);
@@ -139,7 +141,8 @@ int main(int argc, char *argv[]) {
 
     // sync up cuda and data
     cudaDeviceSynchronize();
-    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
+    // cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS, cudaMemcpyDeviceToHost);
 
     // clean up
     cudaFree(d_rgbImage);
