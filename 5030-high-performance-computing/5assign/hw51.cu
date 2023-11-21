@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <iomanip>
-#include <mpi.h>
 
 #include "device_query.cu"
 
@@ -131,13 +130,6 @@ int main(int argc, char *argv[]) {
         // Max num of threads per SM
         // Assume max num of blocks per SM is 8
     // use device query.cu to get info
-    const int DEVICE_ID = 0;
-    cudaSetDevice(DEVICE_ID);
-    cudaDeviceProp prop;
-    cudaGetDeviceProperties(&prop, DEVICE_ID);
-
-    std::cout << "Assuming max number of blocks per SM is: 8" << std::endl;
-    std::cout << "Max threads per SM for device " << DEVICE_ID << ": " << prop.maxThreadsPerMultiProcessor << std::endl;
 
     // Choose three different block sizes and explain analytically how the different block sizes should affect the performance of the application made in Part 1
     // Report experimental results using the three different block sizes
