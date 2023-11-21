@@ -78,7 +78,7 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
  * @param CHANNELS (int)
  *
 */
-void cudaBlock(std::vector<unsigned char> h_rgbImage, std::vector<unsigned char> h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
+void cudaBlock(std::vector<unsigned char> * h_rgbImage, std::vector<unsigned char> * h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
     // cuda init/mem allocation/mem sharing
     unsigned char *d_rgbImage, *d_grayImage;
     cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
@@ -125,7 +125,6 @@ void cudaBlock(std::vector<unsigned char> h_rgbImage, std::vector<unsigned char>
 int main(int argc, char *argv[]) {
     // sometimes hardcoding variables is okay
     std::string INPUT_FILE = "gc_conv_1024x1024.raw";
-    std::string debug_file = "gc_temp.raw";
     std::string OUTPUT_FILE = "gc.raw";
     const int WIDTH = 1024;
     const int HEIGHT = 1024;
@@ -156,7 +155,7 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
     // run cuda kernal
-    cudaBlock(h_rgbImage, h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+    cudaBlock(&h_rgbImage, &h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
@@ -179,3 +178,7 @@ int main(int argc, char *argv[]) {
     
     return 0;
 }
+
+// salloc -n 1 -N 1 -t 0:30:00 -p notchpeak-gpu -A notchpeak --gres=gpu
+// nvcc -o hw51 hw51.cpp
+// srun ./hw51
