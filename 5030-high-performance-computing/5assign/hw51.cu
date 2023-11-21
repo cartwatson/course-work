@@ -86,8 +86,8 @@ void cudaBlock(std::vector<unsigned char>& h_rgbImage, std::vector<unsigned char
     cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
 
     // define block and grid sizes
-    dim3 blockSize(blocksizeX, blocksizeY);
-    dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
+    dim3 blockSize(blocksizeX, blocksizeY, 1);
+    dim3 gridSize(ceil(WIDTH / blockSize.x), ceil(HEIGHT / blockSize.y), 1);
 
     // Convert the image to grayscale
     RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
     // run cuda kernal
-    cudaBlock(h_rgbImage, h_grayImage, 32, 32, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+    cudaBlock(h_rgbImage, h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
