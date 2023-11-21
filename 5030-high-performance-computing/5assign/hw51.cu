@@ -27,24 +27,24 @@
 #include <stdlib.h>
 #include <vector>
 #include <iomanip>
+#include <cuda_runtime.h>
 
-#include "device_query.cu"
 
 
 /**
  * @brief CUDA function to convert a color image to gray scale
  * 
- * @param rgbImage (std::vector<unsigned char>) unprocessed image
+ * @param grayImage (unsigned char *) processed image
+ * @param rgbImage (unsigned char *) unprocessed image
  * @param width (int) width of image
  * @param height (int) height of image
+ * @param CHANNELS (int) number of channels per pixel
  * 
- * @return processed_image (std::vector<unsigned char>) processed image
- * 
- * @note This function is primarily from lecture notes
+ * @note This function is directly from lecture notes
  */
-std::vector<unsigned char> RGBToGrayscale(std::vector<unsigned char> rgbImage, int width, int height, int channels)
+__global__
+void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int width, int height, int CHANNELS)
 {
-    std::vector<unsigned char> grayImage(width*height);
     int Col = threadIdx.x + blockIdx.x * blockDim.x;
     int Row = threadIdx.y + blockIdx.y * blockDim.y;
 
@@ -52,55 +52,55 @@ std::vector<unsigned char> RGBToGrayscale(std::vector<unsigned char> rgbImage, i
         // get 1D coordinate for the grayscale image
         int grayOffset = Row*width + Col;
 
-        // one can think of the RGB image having CHANNEL times columns of the gray scale image
-        int rgbOffset = grayOffset * channels;
+        // one can think of the RGB image having
+        // CHANNEL times columns of the gray scale image
+        int rgbOffset = grayOffset*CHANNELS;
         unsigned char r = rgbImage[rgbOffset ]; // red value for pixel
         unsigned char g = rgbImage[rgbOffset + 1]; // green value for pixel
         unsigned char b = rgbImage[rgbOffset + 2]; // blue value for pixel
-
+        
         // perform the rescaling and store it
-        // NOTE: this implementation may result in rounding errors
+        // We multiply by floating point constants
         grayImage[grayOffset] = 0.21f*r + 0.71f*g + 0.07f*b;
     }
-
-    return grayImage;
 }
 
 
 /**
 * @brief 
 * 
-* @param input_file (str) name of the input file
-* @param output_file (str) name of the output file
-* @note param ordering: <input_file> <output_file>
-* @note both params are optional, if not provided, default values will be used
-* @note image is assumed to be 1024x1024 and have three channels, this is hardcoded
+* @note the following values are hardcoded
+*   - input file name = gc_conv_1024x1024.raw
+*   - output file name = gc.raw
+*   - image width = 1024
+*   - image height = 1024
+*   - number of channels = 3
 * 
 * @return error_code (int) 
 * @retval 0 Success
 * @retval 1 Invalid number of arguments
 */
 int main(int argc, char *argv[]) {
-    // init variables
+    // sometimes hardcoding variables is okay
     std::string INPUT_FILE = "gc_conv_1024x1024.raw";
     std::string OUTPUT_FILE = "gc.raw";
     const int WIDTH = 1024;
     const int HEIGHT = 1024;
-    const int NUM_PIXELS = WIDTH * HEIGHT;
     const int CHANNELS = 3;
+    const int NUM_PIXELS = WIDTH * HEIGHT;
 
     // Check to see if valid # of params provided
-    if (argc > 4) {
+    if (argc != 1) {
         std::cout << "ERROR: Inappropriate number of arguments provided!" << std::endl;
         return 1;
     }
-    // Assign file names as provided
-    if (argc == 3) { OUTPUT_FILE = argv[2]; }
-    if (argc >= 2) { INPUT_FILE = argv[1]; }
     
     // PART 1
-    // init variables for reading in image
-    std::vector<unsigned char> unprocessed_image(NUM_PIXELS * CHANNELS); // multiplied by 3 for RGB channels
+    // init image variables
+    std::vector<unsigned char> h_rgbImage(NUM_PIXELS * CHANNELS);
+    std::vector<unsigned char> h_grayImage(NUM_PIXELS);
+
+    // get image data
     FILE *fp;
     fp = fopen(INPUT_FILE.c_str(), "rb");
     // make sure file exists
@@ -109,11 +109,33 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     // Read in the image file
-    fread(&unprocessed_image[0], sizeof(unsigned char), NUM_PIXELS, fp);
+    fread(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
     fclose(fp);
 
+// CUDA BLOCK ---------------------------------------------------------------//
+
+    // cuda init/mem allocation/mem sharing
+    unsigned char *d_rgbImage, *d_grayImage;
+    cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
+    cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
+    cudaMemcpy(d_rgbImage, h_rgbImage.data(), rgbImageSize, cudaMemcpyHostToDevice);
+
+    // define block and grid sizes
+    dim3 blockSize(16, 16); // Example block size
+    dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
+
     // Convert the image to grayscale
-    std::vector<unsigned char> processed_image = RGBToGrayscale(unprocessed_image, WIDTH, HEIGHT, CHANNELS);
+    RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
+
+    // sync up cuda and data
+    cudaDeviceSynchronize();
+    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
+
+    // clean up
+    cudaFree(d_rgbImage);
+    cudaFree(d_grayImage);
+
+// END CUDA BLOCK -----------------------------------------------------------//
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
@@ -121,7 +143,7 @@ int main(int argc, char *argv[]) {
         std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
         return 1;
     }
-    fwrite(&processed_image[0], sizeof(unsigned char), NUM_PIXELS, fp);
+    fwrite(&h_grayImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
     fclose(fp);
 
 
@@ -133,8 +155,6 @@ int main(int argc, char *argv[]) {
 
     // Choose three different block sizes and explain analytically how the different block sizes should affect the performance of the application made in Part 1
     // Report experimental results using the three different block sizes
-
-
     
     return 0;
 }
