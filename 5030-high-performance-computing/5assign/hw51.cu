@@ -47,9 +47,7 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
     int Col = threadIdx.x + blockIdx.x * blockDim.x;
     int Row = threadIdx.y + blockIdx.y * blockDim.y;
 
-    printf("Hello from block %d, thread %d\n", blockIdx.x, threadIdx.x);//DEBUG
     if (Col < width && Row < height) {
-        printf("inside loop\n");//DEBUG
         // get 1D coordinate for the grayscale image
         int grayOffset = Row*width + Col;
 
@@ -91,7 +89,6 @@ void cudaBlock(std::vector<unsigned char> h_rgbImage, std::vector<unsigned char>
     dim3 blockSize(blocksizeX, blocksizeY);
     dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
 
-    printf("launching kernel\n");//DEBUG
     // Convert the image to grayscale
     RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
 
@@ -103,7 +100,6 @@ void cudaBlock(std::vector<unsigned char> h_rgbImage, std::vector<unsigned char>
 
     // sync up cuda and data
     cudaDeviceSynchronize();
-    printf("sync'd kernel\n");//DEBUG
     cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
 
     // clean up
@@ -178,7 +174,7 @@ int main(int argc, char *argv[]) {
         // Assume max num of blocks per SM is 8
     // use device query.cu to get info
 
-    // Choose three different block sizes and explain analytically how the different block sizes should affect the performance of the application made in Part 1
+    // Choose three different block sizes and explain analytically how the different block sizes should affect the performance
     // Report experimental results using the three different block sizes
     
     return 0;
