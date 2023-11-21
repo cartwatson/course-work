@@ -89,14 +89,8 @@ void cudaBlock(std::vector<unsigned char>& h_rgbImage, std::vector<unsigned char
     dim3 blockSize(blocksizeX, blocksizeY, 1);
     dim3 gridSize(ceil(WIDTH / blockSize.x), ceil(HEIGHT / blockSize.y), 1);
 
-    // Convert the image to grayscale
+    // Convert the image to grayscale on device
     RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
-
-    // output error if there is an issue with the kernal function
-    cudaError_t cudaStatus = cudaGetLastError();
-    if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(cudaStatus));
-    }
 
     // sync up cuda and data
     cudaDeviceSynchronize();
@@ -179,7 +173,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// salloc -n 1 -N 1 -t 0:30:00 -p notchpeak-gpu -A notchpeak --gres=gpu
+// salloc -n 1 -N 1 -t 0:15:00 -p notchpeak-shared-short -A notchpeak-shared-short --gres=gpu
 // module load nvhpc
 // nvcc -o hw51 hw51.cu
 // srun ./hw51
