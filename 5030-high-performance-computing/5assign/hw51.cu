@@ -27,8 +27,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <iomanip>
-#include <cuda_runtime.h>
-
 
 
 /**
