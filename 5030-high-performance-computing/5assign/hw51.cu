@@ -78,7 +78,7 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
  * @param CHANNELS (int)
  *
 */
-void cudaBlock(std::vector<unsigned char> * h_rgbImage, std::vector<unsigned char> * h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
+void cudaBlock(std::vector<unsigned char>& h_rgbImage, std::vector<unsigned char>& h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
     // cuda init/mem allocation/mem sharing
     unsigned char *d_rgbImage, *d_grayImage;
     cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
@@ -180,5 +180,6 @@ int main(int argc, char *argv[]) {
 }
 
 // salloc -n 1 -N 1 -t 0:30:00 -p notchpeak-gpu -A notchpeak --gres=gpu
+// module load nvhpc
 // nvcc -o hw51 hw51.cpp
 // srun ./hw51
