@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
     // run cuda kernal
-    cudaBlock(&h_rgbImage, &h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+    cudaBlock(h_rgbImage, h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
@@ -181,5 +181,5 @@ int main(int argc, char *argv[]) {
 
 // salloc -n 1 -N 1 -t 0:30:00 -p notchpeak-gpu -A notchpeak --gres=gpu
 // module load nvhpc
-// nvcc -o hw51 hw51.cpp
+// nvcc -o hw51 hw51.cu
 // srun ./hw51
