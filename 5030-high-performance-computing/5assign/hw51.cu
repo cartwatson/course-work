@@ -69,6 +69,51 @@ void RGBToGrayscale(unsigned char * grayImage, unsigned char * rgbImage, int wid
 
 
 /**
+ * @brief 
+ * 
+ * @param h_rgbImage (std::vector<unsigned char>)
+ * @param h_grayImage (std::vector<unsigned char>)
+ * @param blocksizeX (int)
+ * @param blocksizeY (int)
+ * @param NUM_PIXELS (int)
+ * @param WIDTH (int)
+ * @param HEIGHT (int)
+ * @param CHANNELS (int)
+ *
+*/
+void cudaBlock(std::vector<unsigned char> h_rgbImage, std::vector<unsigned char> h_grayImage, int blocksizeX, int blocksizeY, int NUM_PIXELS, int WIDTH, int HEIGHT, int CHANNELS) {
+    // cuda init/mem allocation/mem sharing
+    unsigned char *d_rgbImage, *d_grayImage;
+    cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
+    cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
+    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
+
+    // define block and grid sizes
+    dim3 blockSize(blocksizeX, blocksizeY);
+    dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
+
+    printf("launching kernel\n")//DEBUG
+    // Convert the image to grayscale
+    RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
+
+    // output error if there is an issue with the kernal function
+    cudaError_t cudaStatus = cudaGetLastError();
+    if (cudaStatus != cudaSuccess) {
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(cudaStatus));
+    }
+
+    // sync up cuda and data
+    cudaDeviceSynchronize();
+    printf("sync'd kernel\n")//DEBUG
+    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
+
+    // clean up
+    cudaFree(d_rgbImage);
+    cudaFree(d_grayImage);
+}
+
+
+/**
 * @brief 
 * 
 * @note the following values are hardcoded
@@ -115,39 +160,8 @@ int main(int argc, char *argv[]) {
     fread(&h_rgbImage[0], sizeof(unsigned char), NUM_PIXELS, fp);
     fclose(fp);
 
-// CUDA BLOCK ---------------------------------------------------------------//
-
-    // cuda init/mem allocation/mem sharing
-    unsigned char *d_rgbImage, *d_grayImage;
-    cudaMalloc((void **)&d_rgbImage, NUM_PIXELS * CHANNELS * sizeof(unsigned char));
-    cudaMalloc((void **)&d_grayImage, NUM_PIXELS * sizeof(unsigned char));
-    cudaMemcpy(d_rgbImage, h_rgbImage.data(), NUM_PIXELS * CHANNELS * sizeof(unsigned char), cudaMemcpyHostToDevice);
-
-    // define block and grid sizes
-    dim3 blockSize(16, 16);
-    dim3 gridSize((WIDTH + blockSize.x - 1) / blockSize.x, (HEIGHT + blockSize.y - 1) / blockSize.y);
-
-    printf("launching kernel\n")//DEBUG
-    // Convert the image to grayscale
-    RGBToGrayscale<<<gridSize, blockSize>>>(d_grayImage, d_rgbImage, WIDTH, HEIGHT, CHANNELS);
-
-// DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
-    cudaError_t cudaStatus = cudaGetLastError();
-    if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(cudaStatus));
-    }
-// DEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUGDEBUG
-
-    // sync up cuda and data
-    cudaDeviceSynchronize();
-    printf("sync'd kernel\n")//DEBUG
-    cudaMemcpy(h_grayImage.data(), d_grayImage, NUM_PIXELS * sizeof(unsigned char), cudaMemcpyDeviceToHost);
-
-    // clean up
-    cudaFree(d_rgbImage);
-    cudaFree(d_grayImage);
-
-// END CUDA BLOCK -----------------------------------------------------------//
+    // run cuda kernal
+    cudaBlock(h_rgbImage, h_grayImage, 16, 16, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
