@@ -2,7 +2,7 @@
  * @file hw52.cpp
  * @author Carter Watson
  * @date 2023-12-01
- * @brief 
+ * @brief transpose an image using a variety of methods
  * @todo
  * [X] read the image file
  * [X] write a CPU based serial transpose
@@ -15,11 +15,14 @@
  * 
  * @note This program is only meant to be run on University of Utah CHPC machines
  *   Helper info to compile/run on CHPC
- *     0. ssh to a CHPC machine
+ *     0. ssh u1234567@notchpeak.chpc.utah.edu
  *     1. salloc -n 1 -N 1 -t 0:15:00 -p notchpeak-shared-short -A notchpeak-shared-short --gres=gpu
  *     2. module load nvhpc
  *     3. nvcc -o hw52 hw52.cu
  *     4. srun ./hw52
+ * 
+ * @note Notable Sources
+ *   - https://developer.nvidia.com/blog/efficient-matrix-transpose-cuda-cc/
  */
 #include <iostream>
 #include <cstdlib>
@@ -27,7 +30,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <iomanip>
-// #include <cuda_runtime.h>
+#include <cuda_runtime.h>
 
 
 /**
