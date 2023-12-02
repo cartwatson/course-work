@@ -49,8 +49,6 @@ bool validateImageProcessing(std::vector<unsigned char>& validImage, std::vector
     bool valid = true;
     for (int i = 0; i < size; i++) {
         if (validImage[i] != checkImage[i]) {
-            std::cout << "ERROR: Image processing failed at index " << i << std::endl;
-            std::cout << "Expected: " << std::setw(3) << (int)validImage[i] << " Actual: " << std::setw(3) << (int)checkImage[i] << std::endl;
             valid = false;
         }
     }
@@ -319,7 +317,8 @@ int main(int argc, char *argv[]) {
     fwrite(&h_globalGPUMemoryConvImage[0], sizeof(unsigned char), SIZE, fp);
     fclose(fp);
 
-    fp = fopen("gc_global.raw".c_str(), "wb");
+    
+    fp = fopen("gc_global.raw", "wb");
     if (fp == NULL) {
         std::cout << "ERROR: Could not open file " << "gc_global.raw" << std::endl;
         return 1;
@@ -327,7 +326,7 @@ int main(int argc, char *argv[]) {
     fwrite(&h_globalGPUMemoryConvImage[0], sizeof(unsigned char), SIZE, fp);
     fclose(fp);
 
-    fp = fopen("gc_shared.raw".c_str(), "wb");
+    fp = fopen("gc_shared.raw", "wb");
     if (fp == NULL) {
         std::cout << "ERROR: Could not open file " << "gc_shared.raw" << std::endl;
         return 1;
