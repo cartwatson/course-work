@@ -179,7 +179,10 @@ void sharedTransposeImage(unsigned char * input, unsigned char * output, int wid
 
     // Load data into shared memory if within matrix bounds
     if (xIndex < width && yIndex < height) {
-        tile[threadIdx.y][threadIdx.x] = input[index];
+        int inputIndex = (yIndex * width + xIndex) * 3;
+        tile[threadIdx.y][threadIdx.x * 3] = input[inputIndex];         // Red
+        tile[threadIdx.y][threadIdx.x * 3 + 1] = input[inputIndex + 1]; // Green
+        tile[threadIdx.y][threadIdx.x * 3 + 2] = input[inputIndex + 2]; // Blue
     }
 
     // Synchronize threads to ensure all data is loaded into shared memory
@@ -192,7 +195,10 @@ void sharedTransposeImage(unsigned char * input, unsigned char * output, int wid
 
     // Write transposed data to the output if within matrix bounds
     if (xIndex < height && yIndex < width) {
-        output[index] = tile[threadIdx.x][threadIdx.y];
+        int outputIndex = (yIndex * height + xIndex) * 3;
+        output[outputIndex] = tile[threadIdx.x][threadIdx.y * 3];         // Red
+        output[outputIndex + 1] = tile[threadIdx.x][threadIdx.y * 3 + 1]; // Green
+        output[outputIndex + 2] = tile[threadIdx.x][threadIdx.y * 3 + 2]; // Blue
     }
 }
 
