@@ -147,18 +147,12 @@ void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     // stop timer and calculate bandwidth
     std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
-    double bandwidth = (SIZE * sizeof(unsigned char)) / duration.count() / 1e6;
+    double bandwidth = size / duration.count() / 1e6;
     std::cout << "Global Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
 
     // clean up
     cudaFree(d_inputImage);
     cudaFree(d_outputImage);
-
-    // validate image processing
-    if (!validateImageProcessing(h_serialConvImage, outputImage, SIZE)) {
-        std::cout << "ERROR: Global memory image processing failed!" << std::endl;
-        return 1;
-    }
 }
 
 /**
@@ -216,12 +210,9 @@ void sharedTransposeImage(std::vector<unsigned char>& input, std::vector<unsigne
 */
 void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int blocksizeX, int blocksizeY, int width, int height, int size) {
     // cuda init/mem allocation/mem sharing
-    unsigned char *d_input, *d_output;
-    size_t size = width * height * sizeof(unsigned char);
-
-    // Allocate memory on the device
-    cudaMalloc(&d_input, size);
-    cudaMalloc(&d_output, size);
+    unsigned char *d_inputImage, *d_outputImage;
+    cudaMalloc((void **)&d_inputImage, size);
+    cudaMalloc((void **)&d_outputImage, size);
     cudaMemcpy(d_inputImage, inputImage.data(), size, cudaMemcpyHostToDevice);
 
     // define block and grid sizes
@@ -238,21 +229,15 @@ void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     // stop timer and calculate bandwidth
     std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
-    double bandwidth = (SIZE * sizeof(unsigned char)) / duration.count() / 1e6;
+    double bandwidth = size / duration.count() / 1e6;
     std::cout << "Shared Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
 
-    // copy over data
-    outputImage = sharedData;
+    // Copy over data
+    cudaMemcpy(outputImage.data(), d_output, size, cudaMemcpyDeviceToHost);
 
     // Free device memory
     cudaFree(d_input);
     cudaFree(d_output);
-
-    // validate image processing
-    if (!validateImageProcessing(h_serialConvImage, outputImage, SIZE)) {
-        std::cout << "ERROR: Shared memory image processing failed!" << std::endl;
-        return 1;
-    }
 }
 
 
@@ -314,6 +299,15 @@ int main(int argc, char *argv[]) {
 // ----- SHARED MEMORY -----
     // kernel function to perform a matrix transposition of the input matrix using tiling/GPU shared memory
     sharedCudaBlock(h_untouchedImage, h_sharedGPUMemoryConvImage, 32, 32, WIDTH, HEIGHT, SIZE * sizeof(unsigned char));
+
+// ----- VALIDATE IMAGE PROCESSING -----
+    if (!validateImageProcessing(h_serialConvImage, h_globalGPUMemoryConvImage, SIZE)) {
+        std::cout << "ERROR: Global memory image processing failed!" << std::endl;
+    }
+
+    if (!validateImageProcessing(h_serialConvImage, h_sharedGPUMemoryConvImage, SIZE)) {
+        std::cout << "ERROR: Global memory image processing failed!" << std::endl;
+    }
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
