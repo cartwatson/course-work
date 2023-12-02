@@ -312,7 +312,8 @@ int main(int argc, char *argv[]) {
     globalCudaBlock(h_untouchedImage, h_globalGPUMemoryConvImage, 32, 32, WIDTH, HEIGHT, SIZE * sizeof(unsigned char));
 
 // ----- SHARED MEMORY -----
-
+    // kernel function to perform a matrix transposition of the input matrix using tiling/GPU shared memory
+    sharedCudaBlock(h_untouchedImage, h_sharedGPUMemoryConvImage, 32, 32, WIDTH, HEIGHT, SIZE * sizeof(unsigned char));
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
