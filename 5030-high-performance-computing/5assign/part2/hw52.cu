@@ -168,7 +168,7 @@ void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
 // Define tile width as compile time const for cuda compiler
 # define TILE_WIDTH 16
 __global__
-void sharedTransposeImage(unsigned char * input, unsigned char * output, int tileWidth, int width, int height) {
+void sharedTransposeImage(unsigned char * input, unsigned char * output, int width, int height) {
     // Define shared memory
     __shared__ unsigned char tile[TILE_WIDTH][TILE_WIDTH + 1]; // +1 to avoid shared memory bank conflict
 
@@ -310,12 +310,28 @@ int main(int argc, char *argv[]) {
         std::cout << "ERROR: Global memory image processing failed!" << std::endl;
     }
 
-    // Save the converted image in a binary file named gc.raw
+// ----- SAVE IMAGES -----
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
     if (fp == NULL) {
         std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
         return 1;
     }
-    fwrite(&h_sharedGPUMemoryConvImage[0], sizeof(unsigned char), NUM_PIXELS * CHANNELS, fp);
+    fwrite(&h_globalGPUMemoryConvImage[0], sizeof(unsigned char), SIZE, fp);
+    fclose(fp);
+
+    fp = fopen("gc_global.raw".c_str(), "wb");
+    if (fp == NULL) {
+        std::cout << "ERROR: Could not open file " << "gc_global.raw" << std::endl;
+        return 1;
+    }
+    fwrite(&h_globalGPUMemoryConvImage[0], sizeof(unsigned char), SIZE, fp);
+    fclose(fp);
+
+    fp = fopen("gc_shared.raw".c_str(), "wb");
+    if (fp == NULL) {
+        std::cout << "ERROR: Could not open file " << "gc_shared.raw" << std::endl;
+        return 1;
+    }
+    fwrite(&h_sharedGPUMemoryConvImage[0], sizeof(unsigned char), SIZE, fp);
     fclose(fp);
 }
