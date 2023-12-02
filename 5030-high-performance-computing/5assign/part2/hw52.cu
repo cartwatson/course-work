@@ -10,7 +10,7 @@
  * [ ] write a kernel function to perform a matrix transposition of the input matrix making use of tiling (using the GPU shared memory)
  * [X] write a function to validate the result of your transposition
  *       - (i.e., on the host CPU, comparing to a CPU based serial transpose) 
- * [ ] write code to compute the bandwidth performance of both kernels (1 and 2), report and comment the result you obtained
+ * [X] write code to compute the bandwidth performance of both kernels (1 and 2), report and comment the result you obtained
  * [X] save the transposed matrix to a binary file
  * 
  * @note This program is only meant to be run on University of Utah CHPC machines
@@ -30,11 +30,14 @@
 #include <stdlib.h>
 #include <vector>
 #include <iomanip>
+#include <chrono>
 #include <cuda_runtime.h>
 
 
 /**
  * @brief validate image processing
+ * 
+ * checks two vectors of image data pixel by pixel to verify they are identical
  * 
  * @param validImage (std::vector<unsigned char>&) - vector of valid image data
  * @param checkImage (std::vector<unsigned char>&) - vector of image data to check
@@ -55,10 +58,10 @@ bool validateImageProcessing(std::vector<unsigned char>& validImage, std::vector
 }
 
 /**
- * @brief convert regular image to rotated image
+ * @brief convert regular image to rotated image using the cpu 
  * 
- * @param h_untouchedImage (std::vector<unsigned char>&) - vector of unmodified image data
- * @param h_serialConvImage (std::vector<unsigned char>&) - vector of serially modified image data
+ * @param inputImage (std::vector<unsigned char>&) - vector of unmodified image data
+ * @param outputImage (std::vector<unsigned char>&) - vector of serially modified image data
  * @param numPixels (int) - number of pixels in image
  * @param width (int) - width of image
  * @param height (int) - height of image
@@ -66,7 +69,7 @@ bool validateImageProcessing(std::vector<unsigned char>& validImage, std::vector
  * 
  * @return void
  */
-void serial_tranpose(std::vector<unsigned char>& h_untouchedImage, std::vector<unsigned char>& h_serialConvImage, int numPixels, int width, int height, int channels) {
+void serialTranposeImage(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int numPixels, int width, int height, int channels) {
     // this is whats happening at a basic level
     // for x = 0 to N:
     //    for y = 0 to M:
@@ -74,9 +77,181 @@ void serial_tranpose(std::vector<unsigned char>& h_untouchedImage, std::vector<u
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) { 
             for (int c = 0; c < channels; c++) {
-                h_serialConvImage[x * height * channels + y * channels + c] = h_untouchedImage[y * width * channels + x * channels + c];
+                outputImage[x * height * channels + y * channels + c] = inputImage[y * width * channels + x * channels + c];
             }
         }
+    }
+}
+
+/**
+ * @brief convert regular image to rotated image using the gpu global memory
+ * 
+ * @param inputImage (std::vector<unsigned char>&) - pointer to unmodified image data
+ * @param outputImage (std::vector<unsigned char>&) - pointer to modified image data
+ * @param width (int) - width of image
+ * @param height (int) - height of image
+ * 
+ * @return void
+*/
+__global__
+void globalTransposeImage(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int width, int height) {
+    // Calculate the global thread index
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    int col = blockIdx.y * blockDim.y + threadIdx.y;
+
+    // Check if the thread is within the image dimensions
+    if (row < height && col < width) {
+        // Calculate the linear indices for accessing input and output images
+        int inputIndex = row * width + col;
+        int outputIndex = col * height + row;
+
+        // Perform the pixel transposition by copying from input to output
+        outputImage[outputIndex] = inputImage[inputIndex];
+    }
+}
+
+/**
+ * @brief convert regular image to rotated image using the gpu global memory
+ * 
+ * @param inputImage (std::vector<unsigned char>) unprocessed image
+ * @param outputImage (std::vector<unsigned char>) allocated vector for converted image
+ * @param blocksizeX (int)
+ * @param blocksizeY (int)
+ * @param size (int)
+ * @param width (int)
+ * @param height (int)
+ *
+ * @return void
+*/
+void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int blocksizeX, int blocksizeY, int width, int height, int size) {
+    // cuda init/mem allocation/mem sharing
+    unsigned char *d_inputImage, *d_outputImage;
+    cudaMalloc((void **)&d_inputImage, size);
+    cudaMalloc((void **)&d_outputImage, size);
+    cudaMemcpy(d_inputImage, inputImage.data(), size, cudaMemcpyHostToDevice);
+
+    // define block and grid sizes
+    dim3 blockSize(blocksizeX, blocksizeY, 1);
+    dim3 gridSize(ceil(width / blockSize.x), ceil(height / blockSize.y), 1);
+
+    // start timer for bandwidth
+    std::chrono::_V2::system_clock::time_point start = std::chrono::high_resolution_clock::now();
+
+    // Convert the image to grayscale on device
+    globalTransposeImage<<<gridSize, blockSize>>>(d_inputImage, d_outputImage, width, height);
+
+    // sync up cuda and data
+    cudaDeviceSynchronize();
+    cudaMemcpy(outputImage.data(), d_outputImage, size, cudaMemcpyDeviceToHost);
+
+    // stop timer and calculate bandwidth
+    std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
+    std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
+    double bandwidth = (SIZE * sizeof(unsigned char)) / duration.count() / 1e6;
+    std::cout << "Global Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
+
+    // clean up
+    cudaFree(d_inputImage);
+    cudaFree(d_outputImage);
+
+    // validate image processing
+    if (!validateImageProcessing(h_serialConvImage, outputImage, SIZE)) {
+        std::cout << "ERROR: Global memory image processing failed!" << std::endl;
+        return 1;
+    }
+}
+
+/**
+ * @brief convert regular image to rotated image using the gpu shared memory
+ * 
+ * @param inputImage (std::vector<unsigned char>&) - pointer to unmodified image data
+ * @param outputImage (std::vector<unsigned char>&) - pointer to modified image data
+ * @param width (int) - width of image
+ * @param height (int) - height of image
+ * 
+ * @return void
+*/
+__global__
+void sharedTransposeImage(std::vector<unsigned char>& input, std::vector<unsigned char>& output, int tileWidth, int width, int height) {
+    // Define shared memory
+    __shared__ unsigned char tile[tileWidth][tileWidth + 1]; // +1 to avoid shared memory bank conflict
+
+    // Calculate global row and column indices
+    int xIndex = blockIdx.x * tileWidth + threadIdx.x;
+    int yIndex = blockIdx.y * tileWidth + threadIdx.y;
+    int index = yIndex * width + xIndex;
+
+    // Load data into shared memory if within matrix bounds
+    if (xIndex < width && yIndex < height) {
+        tile[threadIdx.y][threadIdx.x] = input[index];
+    }
+
+    // Synchronize threads to ensure all data is loaded into shared memory
+    __syncthreads();
+
+    // Transpose block offset
+    xIndex = blockIdx.y * tileWidth + threadIdx.x;
+    yIndex = blockIdx.x * tileWidth + threadIdx.y;
+    index = yIndex * height + xIndex; // Transposed index
+
+    // Write transposed data to the output if within matrix bounds
+    if (xIndex < height && yIndex < width) {
+        output[index] = tile[threadIdx.x][threadIdx.y];
+    }
+}
+
+
+/**
+ * @brief convert regular image to rotated image using the gpu shared memory
+ * 
+ * @param inputImage (std::vector<unsigned char>) unprocessed image
+ * @param outputImage (std::vector<unsigned char>) allocated vector for converted image
+ * @param blocksizeX (int)
+ * @param blocksizeY (int)
+ * @param size (int)
+ * @param width (int)
+ * @param height (int)
+ *
+ * @return void
+*/
+void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int blocksizeX, int blocksizeY, int width, int height, int size) {
+    // cuda init/mem allocation/mem sharing
+    unsigned char *d_input, *d_output;
+    size_t size = width * height * sizeof(unsigned char);
+
+    // Allocate memory on the device
+    cudaMalloc(&d_input, size);
+    cudaMalloc(&d_output, size);
+    cudaMemcpy(d_inputImage, inputImage.data(), size, cudaMemcpyHostToDevice);
+
+    // define block and grid sizes
+    dim3 blockSize(blocksizeX, blocksizeY, 1);
+    dim3 gridSize(ceil(width / blockSize.x), ceil(height / blockSize.y), 1);
+
+    // start timer for bandwidth
+    std::chrono::_V2::system_clock::time_point start = std::chrono::high_resolution_clock::now();
+
+    // kernel function to perform a matrix transposition of the input matrix using tiling/GPU shared memory
+    int tileWidth = 16;
+    sharedTransposeImage<<<gridSize, blockSize>>>(d_input, d_output, tileWidth, width, height);
+
+    // stop timer and calculate bandwidth
+    std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
+    std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
+    double bandwidth = (SIZE * sizeof(unsigned char)) / duration.count() / 1e6;
+    std::cout << "Shared Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
+
+    // copy over data
+    outputImage = sharedData;
+
+    // Free device memory
+    cudaFree(d_input);
+    cudaFree(d_output);
+
+    // validate image processing
+    if (!validateImageProcessing(h_serialConvImage, outputImage, SIZE)) {
+        std::cout << "ERROR: Shared memory image processing failed!" << std::endl;
+        return 1;
     }
 }
 
@@ -103,6 +278,7 @@ int main(int argc, char *argv[]) {
     const int HEIGHT = 1024;
     const int CHANNELS = 3;
     const int NUM_PIXELS = WIDTH * HEIGHT;
+    const int SIZE = NUM_PIXELS * CHANNELS;
 
     // Check to see if valid # of params provided
     if (argc != 1) {
@@ -111,9 +287,10 @@ int main(int argc, char *argv[]) {
     }
 
     // init variables for start and final image
-    std::vector<unsigned char> h_untouchedImage(NUM_PIXELS * CHANNELS);
-    std::vector<unsigned char> h_serialConvImage(NUM_PIXELS * CHANNELS);
-    std::vector<unsigned char> h_convImage(NUM_PIXELS * CHANNELS);
+    std::vector<unsigned char> h_untouchedImage(SIZE);
+    std::vector<unsigned char> h_serialConvImage(SIZE);
+    std::vector<unsigned char> h_globalGPUMemoryConvImage(SIZE);
+    std::vector<unsigned char> h_sharedGPUMemoryConvImage(SIZE);
 
     // get image data
     FILE *fp;
@@ -124,18 +301,18 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     // Read in the image file
-    fread(&h_untouchedImage[0], sizeof(unsigned char), NUM_PIXELS * CHANNELS, fp);
+    fread(&h_untouchedImage[0], sizeof(unsigned char), SIZE, fp);
     fclose(fp);
 
+// ----- SERIAL IMPLEMENTATION -----
     serial_tranpose(h_untouchedImage, h_serialConvImage, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
     
-    // 
+// ----- GLOBAL MEMORY -----
+    // kernel function to perform a matrix transposition of the input matrix using GPU global memory
+    globalCudaBlock(h_untouchedImage, h_globalGPUMemoryConvImage, 32, 32, WIDTH, HEIGHT, SIZE * sizeof(unsigned char));
 
-    
+// ----- SHARED MEMORY -----
 
-    // validate image processing
-    validateImageProcessing(h_serialConvImage, h_convImage, NUM_PIXELS * CHANNELS);
-    validateImageProcessing(h_serialConvImage, h_convImage, NUM_PIXELS * CHANNELS);
 
     // Save the converted image in a binary file named gc.raw
     fp = fopen(OUTPUT_FILE.c_str(), "wb");
@@ -143,6 +320,6 @@ int main(int argc, char *argv[]) {
         std::cout << "ERROR: Could not open file " << OUTPUT_FILE << std::endl;
         return 1;
     }
-    fwrite(&h_convImage[0], sizeof(unsigned char), NUM_PIXELS * CHANNELS, fp);
+    fwrite(&h_sharedGPUMemoryConvImage[0], sizeof(unsigned char), NUM_PIXELS * CHANNELS, fp);
     fclose(fp);
 }
