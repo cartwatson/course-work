@@ -99,12 +99,14 @@ void globalTransposeImage(unsigned char * inputImage, unsigned char * outputImag
 
     // Check if the thread is within the image dimensions
     if (row < height && col < width) {
-        // Calculate the linear indices for accessing input and output images
-        int inputIndex = row * width + col;
-        int outputIndex = col * height + row;
+        // Calculate the linear indices for the input and output images, accounting for RGB channels
+        int inputIndex = (row * width + col) * 3;
+        int outputIndex = (col * height + row) * 3;
 
-        // Perform the pixel transposition by copying from input to output
-        outputImage[outputIndex] = inputImage[inputIndex];
+        // Perform the pixel transposition for each color channel
+        outputImage[outputIndex] = inputImage[inputIndex];         // Red
+        outputImage[outputIndex + 1] = inputImage[inputIndex + 1]; // Green
+        outputImage[outputIndex + 2] = inputImage[inputIndex + 2]; // Blue
     }
 }
 
@@ -145,7 +147,7 @@ void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     // stop timer and calculate bandwidth
     std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
-    double bandwidth = size / duration.count() / 1e6;
+    double bandwidth = size / (duration.count() / 1e6);
     std::cout << "Global Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
 
     // clean up
@@ -228,7 +230,7 @@ void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     // stop timer and calculate bandwidth
     std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
     std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(start - stop);
-    double bandwidth = size / duration.count() / 1e6;
+    double bandwidth = size / (duration.count() / 1e6);
     std::cout << "Shared Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
 
     // Copy over data
