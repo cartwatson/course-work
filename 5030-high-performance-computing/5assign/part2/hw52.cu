@@ -86,15 +86,15 @@ void serialTranposeImage(std::vector<unsigned char>& inputImage, std::vector<uns
 /**
  * @brief convert regular image to rotated image using the gpu global memory
  * 
- * @param inputImage (std::vector<unsigned char>&) - pointer to unmodified image data
- * @param outputImage (std::vector<unsigned char>&) - pointer to modified image data
+ * @param inputImage (unsigned char *) - pointer to unmodified image data
+ * @param outputImage (unsigned char *) - pointer to modified image data
  * @param width (int) - width of image
  * @param height (int) - height of image
  * 
  * @return void
 */
 __global__
-void globalTransposeImage(std::vector<unsigned char>& inputImage, std::vector<unsigned char>& outputImage, int width, int height) {
+void globalTransposeImage(unsigned char * inputImage, unsigned char * outputImage, int width, int height) {
     // Calculate the global thread index
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     int col = blockIdx.y * blockDim.y + threadIdx.y;
@@ -158,21 +158,23 @@ void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
 /**
  * @brief convert regular image to rotated image using the gpu shared memory
  * 
- * @param inputImage (std::vector<unsigned char>&) - pointer to unmodified image data
- * @param outputImage (std::vector<unsigned char>&) - pointer to modified image data
+ * @param inputImage (unsigned char *) - pointer to unmodified image data
+ * @param outputImage (unsigned char *) - pointer to modified image data
  * @param width (int) - width of image
  * @param height (int) - height of image
  * 
  * @return void
 */
+// Define tile width as compile time const for cuda compiler
+# define TILE_WIDTH 16
 __global__
-void sharedTransposeImage(std::vector<unsigned char>& input, std::vector<unsigned char>& output, int tileWidth, int width, int height) {
+void sharedTransposeImage(unsigned char * input, unsigned char * output, int tileWidth, int width, int height) {
     // Define shared memory
-    __shared__ unsigned char tile[tileWidth][tileWidth + 1]; // +1 to avoid shared memory bank conflict
+    __shared__ unsigned char tile[TILE_WIDTH][TILE_WIDTH + 1]; // +1 to avoid shared memory bank conflict
 
     // Calculate global row and column indices
-    int xIndex = blockIdx.x * tileWidth + threadIdx.x;
-    int yIndex = blockIdx.y * tileWidth + threadIdx.y;
+    int xIndex = blockIdx.x * TILE_WIDTH + threadIdx.x;
+    int yIndex = blockIdx.y * TILE_WIDTH + threadIdx.y;
     int index = yIndex * width + xIndex;
 
     // Load data into shared memory if within matrix bounds
@@ -184,8 +186,8 @@ void sharedTransposeImage(std::vector<unsigned char>& input, std::vector<unsigne
     __syncthreads();
 
     // Transpose block offset
-    xIndex = blockIdx.y * tileWidth + threadIdx.x;
-    yIndex = blockIdx.x * tileWidth + threadIdx.y;
+    xIndex = blockIdx.y * TILE_WIDTH + threadIdx.x;
+    yIndex = blockIdx.x * TILE_WIDTH + threadIdx.y;
     index = yIndex * height + xIndex; // Transposed index
 
     // Write transposed data to the output if within matrix bounds
@@ -223,8 +225,7 @@ void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     std::chrono::_V2::system_clock::time_point start = std::chrono::high_resolution_clock::now();
 
     // kernel function to perform a matrix transposition of the input matrix using tiling/GPU shared memory
-    int tileWidth = 16;
-    sharedTransposeImage<<<gridSize, blockSize>>>(d_input, d_output, tileWidth, width, height);
+    sharedTransposeImage<<<gridSize, blockSize>>>(d_inputImage, d_outputImage, width, height);
 
     // stop timer and calculate bandwidth
     std::chrono::_V2::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
@@ -233,11 +234,11 @@ void sharedCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
     std::cout << "Shared Memory Bandwidth: " << bandwidth << " bytes/second" << std::endl;
 
     // Copy over data
-    cudaMemcpy(outputImage.data(), d_output, size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(outputImage.data(), d_outputImage, size, cudaMemcpyDeviceToHost);
 
     // Free device memory
-    cudaFree(d_input);
-    cudaFree(d_output);
+    cudaFree(d_inputImage);
+    cudaFree(d_outputImage);
 }
 
 
@@ -290,7 +291,7 @@ int main(int argc, char *argv[]) {
     fclose(fp);
 
 // ----- SERIAL IMPLEMENTATION -----
-    serial_tranpose(h_untouchedImage, h_serialConvImage, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
+    serialTranposeImage(h_untouchedImage, h_serialConvImage, NUM_PIXELS, WIDTH, HEIGHT, CHANNELS);
     
 // ----- GLOBAL MEMORY -----
     // kernel function to perform a matrix transposition of the input matrix using GPU global memory
