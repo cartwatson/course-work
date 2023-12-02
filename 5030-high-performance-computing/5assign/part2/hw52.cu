@@ -166,16 +166,15 @@ void globalCudaBlock(std::vector<unsigned char>& inputImage, std::vector<unsigne
  * @return void
 */
 // Define tile width as compile time const for cuda compiler
-# define TILE_WIDTH 16
+# define TILE_WIDTH 32
 __global__
 void sharedTransposeImage(unsigned char * input, unsigned char * output, int width, int height) {
     // Define shared memory
-    __shared__ unsigned char tile[TILE_WIDTH][TILE_WIDTH + 1]; // +1 to avoid shared memory bank conflict
+    __shared__ unsigned char tile[TILE_WIDTH][TILE_WIDTH * 3 + 1]; // + 1 to avoid shared memory bank conflict
 
     // Calculate global row and column indices
     int xIndex = blockIdx.x * TILE_WIDTH + threadIdx.x;
     int yIndex = blockIdx.y * TILE_WIDTH + threadIdx.y;
-    int index = yIndex * width + xIndex;
 
     // Load data into shared memory if within matrix bounds
     if (xIndex < width && yIndex < height) {
@@ -191,7 +190,6 @@ void sharedTransposeImage(unsigned char * input, unsigned char * output, int wid
     // Transpose block offset
     xIndex = blockIdx.y * TILE_WIDTH + threadIdx.x;
     yIndex = blockIdx.x * TILE_WIDTH + threadIdx.y;
-    index = yIndex * height + xIndex; // Transposed index
 
     // Write transposed data to the output if within matrix bounds
     if (xIndex < height && yIndex < width) {
