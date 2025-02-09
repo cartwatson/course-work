@@ -1,0 +1,8 @@
+{
+    "httpMethod": "POST",
+    "url": "https://slc5jeswb3.execute-api.us-east-1.amazonaws.com/widget",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": "{\"type\": \"update\", \"requestId\": \"42db260b-7df5-4401-9dd1-dd38a663a2cf\", \"widgetId\": \"3e547343-1cba-4c8d-9abc-3b955a5d96cb\", \"owner\": \"John Jones\", \"label\": \"UpdatedLabel\", \"description\": \"UpdatedDescription\", \"otherAttributes\": [{\"name\": \"color\", \"value\": \"blue\"}, {\"name\": \"weight\", \"value\": \"500g\"}]}"
+}

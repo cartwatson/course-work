@@ -1,0 +1,8 @@
+{
+    "httpMethod": "POST",
+    "url": "https://slc5jeswb3.execute-api.us-east-1.amazonaws.com/widget",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": "{\"type\": \"create\", \"requestId\": \"61067363-90dd-4305-94c2-2e7868fc9bd4\", \"widgetId\": \"3e547343-1cba-4c8d-9abc-3b955a5d96cb\", \"owner\": \"John Jones\", \"label\": \"5G3JZIO1ZN\", \"description\": \"YH5PFVRM6OD4U5YHROWQFJPVX1E13Q6AEPEO3HVTUXSF2XSK5C\"}"
+}

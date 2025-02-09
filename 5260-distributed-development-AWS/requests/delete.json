@@ -1,0 +1,8 @@
+{
+    "httpMethod": "POST",
+    "url": "https://slc5jeswb3.execute-api.us-east-1.amazonaws.com/widget",
+    "headers": {
+        "Content-Type": "application/json"
+    },
+    "body": "{\"type\": \"delete\", \"requestId\": \"19648410-0978-4fc8-9898-4c58c59c4733\", \"widgetId\": \"3e547343-1cba-4c8d-9abc-3b955a5d96cb\", \"owner\": \"John Jones\"}"
+}
