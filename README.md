@@ -14,7 +14,7 @@ This project aims to implement a parallel K-Means clustering algorithm to catego
 ### Description
 There was only assignment for this class.  We created a list of requirements after a discussion with the professor.  From that point we followed the scrum and agile methodologies to produce a functioning web app.  
 
-## ECE 2700 - FPGA 4Bit Processor
+## ECE 2700 - FPGA 4Bit CPU
 [Source Code](https://github.com/cartwatson/4bit-processor)  
 ### Description
 Created a 4bit processor on the Basys 3 FPGA dev board using VHDL.  
